@@ -38,20 +38,35 @@ Using aws-sdk
 ### Component (on screen)
 - semi-transparent
 
+-Main View (all):
+-----Header----
+List of Phrases (in order of oldest -> newest (top to bottom))
+- prop to toggleDisplayName of user who submitted phrase
 
-### Broadcaster
-List of phrases in order of time submitted
-Button to click to Complete and remove from list
-### Viewer (logged in)
-Tab to view current phrases in the list
-Tab to add a phrase
-- form field
-- submit button (needs to contain validation of user and then bits, etc)
-- msg saying this will cost X bits, etc
-- validation of msg that doesnt break twitch TOS, maybe find way to apply twitchautomod over msg
-### Viewer (logged out)
-- view list of phrases
-- msg that says to submit your own phrase please log in...
+-Main View (broadcaster):
+-----Header----
+List of Phrases (in order of oldest -> newest (top to bottom))
+- each phrase has a `Mark Completed` button (removes from list and marks completed on backend / or removes from backend DB)
+- prop to toggleDisplayName of user who submitted phrase
+
+- Tab 2 (Add phrase)
+-----Header------
+Form field
+QuickHelp info, says how many bits it will cost
+Submit Button
+- trigger validation on form field
+-- validation checks against twitch auto mod (if possible)
+-- or checks against bad words, etc (this could be a config option for broadcaster to choose what kind of filter to use)
+-- triggers a are you sure, once click is final transaction kind of msg (twitch might provide this)
+
+- If Viewer Logged Out
+-- Show msg and button to sign in to submit your own prhase
+
+### ConfigPage
+Needs to be legible (contrast) in light/dark themes
+- Filter On yes/no
+- showDisplayNameOfSuggester
+- allow users to upvote other suggestions to top of the list?
 
 
 
