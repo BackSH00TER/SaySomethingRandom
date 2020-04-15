@@ -52,7 +52,6 @@ router.get('/phrases', async (req, res) => {
 })
 
 router.post('/phrase', async (req, res) => {
-  console.log('request body', req.body);
   // let {channelId, clientId} = req.body.auth;
   // let token = app.getToken(req);
   let post = await postPhrase(req.body);
@@ -78,7 +77,8 @@ const getPhrasesByChannel = async (channelId) => {
   const params = {
     TableName: tableName,
     ExpressionAttributeValues: {":channelId": channelId},
-    KeyConditionExpression: "channelId = :channelId"
+    KeyConditionExpression: "channelId = :channelId",
+    // ProjectionExpression: "channelId, displayName, phrase" // only need to specify which attributes to return, otherwise returns all
   };
 
   try {
@@ -91,9 +91,8 @@ const getPhrasesByChannel = async (channelId) => {
 }
 
 const postPhrase = async (phraseBody) => { 
-  console.log('phraseBody', phraseBody);
   const {channelId, userId, displayName, phrase} = phraseBody;
-  const uuid = uuidv4(); // generate a unique id for the phrase
+  const uuid = uuidv4(); // generates a unique id for the phrase
   const params = {
     TableName: tableName,
     Item: {

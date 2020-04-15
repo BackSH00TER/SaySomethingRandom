@@ -11,18 +11,18 @@ Will need some sort of PubSub to listen for new messages added to the backend
 -- Twitch Extension helper should help with this
 ### Back End
 - DynamoDB table to hold all input data
--- Table will have all data for all streams using skill
--- Table needs main key to be the channel_id (the broadcaster id) and sort key unique identifer id (uuid)
--- Potential attributes: channel_id, user_id, phrase, date/time, answered, dislayName
---- Decide if we delete the entry once its been answered or if want to store all old responses
---- If kept old responses could have a view for users to see past suggestions and maybe sort by diff users?
+  - Table will have all data for all streams using skill
+  - Table needs main key to be the channel_id (the broadcaster id) and sort key unique identifer id (uuid)
+  - Potential attributes: channel_id, user_id, phrase, date/time, answered, dislayName
+    - Decide if we delete the entry once its been answered or if want to store all old responses
+    - If kept old responses could have a view for users to see past suggestions and maybe sort by diff users?
 
 - Lambda Function to execute the stuff
 
 #### Api Gateway for Endpoints
--- GET /phrases/?channel_id={twitch channel user id to pull phrases}
--- POST /phrase body = {user_id, channel_id, phrase, userDisplayName, timePosted}
--- PUT /completed body = {id (of the phrase), completed (boolean)}
+- GET /phrases/?channel_id={twitch channel user id to pull phrases}
+- POST /phrase body = {user_id, channel_id, phrase, userDisplayName, timePosted}
+- PUT /completed body = {id (of the phrase), completed (boolean)}
 
 #### Functions to query DynamoDb
 Using aws-sdk
@@ -38,7 +38,7 @@ Using aws-sdk
 ### Component (on screen)
 - semi-transparent
 
--Main View (all):
+- Main View (all): 
 -----Header----
 List of Phrases (in order of oldest -> newest (top to bottom))
 - prop to toggleDisplayName of user who submitted phrase
