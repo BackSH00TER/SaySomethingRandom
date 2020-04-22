@@ -58,6 +58,7 @@ Submit Button
 -- validation checks against twitch auto mod (if possible)
 -- or checks against bad words, etc (this could be a config option for broadcaster to choose what kind of filter to use)
 -- triggers a are you sure, once click is final transaction kind of msg (twitch might provide this)
+- allow user ability to edit message after submitted? (future)
 
 - If Viewer Logged Out
 -- Show msg and button to sign in to submit your own prhase

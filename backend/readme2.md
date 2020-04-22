@@ -3,7 +3,9 @@
 Changing cloudformation.yaml to template.yaml so that sam local start-api can run it
 - might have to reconfigure some of the scripts that are expecting a cloudformation.yaml file, or reconfigure the sam start-api to look for cloudformationl.yaml instead
 
-Run `sam local start-api` to run docker container locally to test
+To run backend locally:
+- start docker
+- Run `sam local start-api` to run docker container locally to test
 
 Editing the backend/app.js file for endpoints
 

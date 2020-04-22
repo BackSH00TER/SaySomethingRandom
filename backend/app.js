@@ -46,26 +46,31 @@ router.get('/sam', (req, res) => {
   res.sendFile(`${__dirname}/sam-logo.png`)
 })
 
+// Requires request must pass channelId
 router.get('/phrases', async (req, res) => {
   let phrases = await getPhrasesByChannel(req.query.channelId);
   res.json(phrases);
 })
 
+// TODO: Hook up auth / bits
 router.post('/phrase', async (req, res) => {
   // let {channelId, clientId} = req.body.auth;
   // let token = app.getToken(req);
   let post = await postPhrase(req.body);
+  console.log('post', post);
   // let twitchpubsubPost = await postToTwitchPubSub('newphrase', token, channelId, clientId);
   // console.log('twitchpubsubPost', twitchpubsubPost);
   res.json(post);
+  return post;
 })
 
 router.put('/completed', async (req, res) => {
-  let {channelId, clientId} = req.body.auth;
-  let token = app.getToken(req);
+  // let {channelId, clientId} = req.body.auth;
+  // let token = app.getToken(req);
   let put = await completePhrase(req.body);
-  let twitchpubsubPost = await postToTwitchPubSub('phraseCompleted', token, channelId, clientId);
-  console.log('twitchpubsubPost', twitchpubsubPost);
+  console.log('put', put);
+  // let twitchpubsubPost = await postToTwitchPubSub('phraseCompleted', token, channelId, clientId);
+  // console.log('twitchpubsubPost', twitchpubsubPost);
   res.json(put);
 })
 
@@ -85,7 +90,8 @@ const getPhrasesByChannel = async (channelId) => {
     const data = await dynamodb.query(params).promise();
     console.log('data returned', data);
     return data.Items;
-  } catch (err) {
+  }
+  catch (err) {
     console.log(err);
   }
 }
@@ -106,16 +112,42 @@ const postPhrase = async (phraseBody) => {
   };
 
   try {
-    const data = await dynamodb.put(params).promise();
-    console.log(data);
-    return data;
-  } catch (err) {
+    const data1 = await dynamodb.put(params).promise();
+    console.log(' the response is', data1);
+    return data1;
+  }
+  catch (err) {
     console.log(err);
     return err;
   }
 }
 
-const completePhrase = async (channelId) => { }
+const completePhrase = async (args) => {
+  const {channelId, messageId} = args;
+
+  const params = {
+    TableName: tableName,
+    Key: {
+      "channelId": channelId,
+      "uuid": messageId
+    },
+    UpdateExpression: "set completed = :completed",
+    ExpressionAttributeValues: {
+      ":completed": true
+    },
+    ReturnValues: "UPDATED_NEW"
+  };
+
+  try {
+    const data = await dynamodb.update(params).promise();
+    console.log(data);
+    return data;
+  }
+  catch (err) {
+    console.log(err);
+    return err;
+  }
+}
 
 
 // The aws-serverless-express library creates a server and listens on a Unix
