@@ -35,6 +35,21 @@ Using aws-sdk
 
 ## VIEWS
 ### Panel
+- Style with Bootstrap? Install BOotstrap, or something simlar?
+- Loading state
+  - Just show a spinner, with loading text
+- On error
+- On success
+  - Header
+    - tabs to create/add your own suggestion
+    - tab to view current suggestions
+    - tab to view past suggestions/already answered (future)
+  - show list of data
+  - Footer
+    - button "Make your own suggestion"
+
+
+
 ### Component (on screen)
 - semi-transparent
 
