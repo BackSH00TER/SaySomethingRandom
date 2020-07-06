@@ -8,4 +8,13 @@
 
 .App-dark{
     color:#e5e3e8;
+    background-color: #0e0e10;
+}
+
+.makeMeDark{
+  background-color: #0e0e10;
+}
+
+.user-displayName{
+  font-size: 14px;
 }

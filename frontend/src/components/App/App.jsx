@@ -1,6 +1,10 @@
 import React from 'react'
+import ListGroup from 'react-bootstrap/ListGroup';
+import Spinner from 'react-bootstrap/Spinner';
+
 import Authentication from '../../util/Authentication/Authentication'
 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 
 export default class App extends React.Component {
@@ -13,6 +17,7 @@ export default class App extends React.Component {
     this.twitch = window.Twitch ? window.Twitch.ext : null
     this.state = {
       finishedLoading: false,
+      isLoadingPhrases: false,
       theme: 'light',
       isVisible: true,
       phrases: []
@@ -39,7 +44,7 @@ export default class App extends React.Component {
     if (this.twitch) {
       this.twitch.onAuthorized((auth) => {
         this.Authentication.setToken(auth.token, auth.userId)
-        if (!this.state.finishedLoading) {
+        if (!this.state.finishedLoading) { // TODO: Figure out if I need to use finishedLoading??
           // if the component hasn't finished loading (as in we've not set up after getting a token), let's set it up now.
 
           // now we've done the setup for the component, let's set the state to true to force a rerender with the correct data.
@@ -65,6 +70,7 @@ export default class App extends React.Component {
         this.contextUpdate(context, delta)
       })
 
+      // TODO: Something aint right. Spinner needs to go off here toooo pal
       this.fetchPhrases();
     }
   }
@@ -81,51 +87,74 @@ export default class App extends React.Component {
     const channelId = "123455";
     const url = `${ROOTAPIURL}phrases?channelId=${channelId}`;
 
-    this.setState({ finishedLoading: false }); // use a diff state variable for this
+    this.setState({ isLoadingPhrases: true }); 
 
     fetch(url)
       .then(response => response.json())
       .then(responseJson => {
         console.log('resposnjson', responseJson);
         this.setState({ phrases: responseJson });
-        this.setState({ finishedLoading: true });
+        this.setState({ isLoadingPhrases: false });
       })
 
     // console.log('this.state.phrase', this.state.phrases);
   }
 
   render() {
-    const loadingState = !this.state.finishedLoading && (
-      <div>
-        SPINNER
-        <h5>Loading</h5>
-      </div>
+    const isLightTheme = this.state.theme === 'light';
+    const whichTheme = isLightTheme ? 'App-light' : 'App-dark'; // TODO: rename this variable
+    
+    const loadingState = this.state.isLoadingPhrases && (
+      <React.Fragment>
+        <Spinner animation="border">
+          <span className='sr-only'>Loading...</span>
+        </Spinner>
+        <div>Loading...</div>
+      </React.Fragment>
     );
 
     const renderList = (
-      <ul>
-        {this.state.phrases.map(item => <li key={item.uuid}>{item.phrase}</li>)}
-      </ul>
+      <ListGroup>
+        {this.state.phrases.map(item =>
+          <ListGroup.Item className={!isLightTheme ? 'makeMeDark' : ''} key={item.uuid}>
+            <div>{item.phrase}</div>
+            <div className='user-displayName'>{item.displayName}</div>
+          </ListGroup.Item>)}
+      </ListGroup>
+
+      // TODO:
+      // - set a max height on listgroup.item w/ overflow ellipsis if really long
     );
 
     const fetchButton = (
       <button onClick={this.fetchPhrases}>Fetch the results</button>
     )
 
-    if (this.state.finishedLoading && this.state.isVisible) {
-      return (
-        <div className="App">
-          {renderList}
-          {fetchButton}
-        </div>
-      )
-    } else {
-      return (
-        <div className="App">
-          {loadingState}
-        </div>
-      )
-    }
+    const shouldRenderList = this.state.finishedLoading && this.state.isVisible && !this.state.isLoadingPhrases;
+
+    // if (this.state.finishedLoading && this.state.isVisible && !this.state.isLoadingPhrases) {
+    //   return (
+    //     <div className="App">
+    //       {renderList}
+    //       {fetchButton}
+    //     </div>
+    //   )
+    // } else {
+    //   return (
+    //     <div className="App">
+    //       {loadingState}
+    //     </div>
+    //   )
+    // }
+   
+
+    return (
+      <div className={`App ${whichTheme}`}>
+        {loadingState}
+        {shouldRenderList && renderList}
+        {shouldRenderList && fetchButton}
+      </div>
+    )
 
   }
 }
