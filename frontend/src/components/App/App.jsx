@@ -1,8 +1,10 @@
 import React from 'react'
-import ListGroup from 'react-bootstrap/ListGroup';
 import Spinner from 'react-bootstrap/Spinner';
+import Button from 'react-bootstrap/Button';
 
-import Authentication from '../../util/Authentication/Authentication'
+import Authentication from '../../util/Authentication/Authentication';
+
+import { TabHeader } from '../tab-header';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
@@ -20,7 +22,8 @@ export default class App extends React.Component {
       isLoadingPhrases: false,
       theme: 'light',
       isVisible: true,
-      phrases: []
+      phrases: [],
+      currentChannelId: ''
     }
   }
 
@@ -49,11 +52,12 @@ export default class App extends React.Component {
 
           // now we've done the setup for the component, let's set the state to true to force a rerender with the correct data.
           this.setState(() => {
-            return { finishedLoading: true }
+            return { finishedLoading: true, currentChannelId: auth.channelId }
           })
         }
       })
 
+      // TODO: This might help a bit https://dev.twitch.tv/docs/tutorials/extension-101-tutorial-series/file-structure
       this.twitch.listen('broadcast', (target, contentType, body) => {
         this.twitch.rig.log(`New PubSub message!\n${target}\n${contentType}\n${body}`)
         // now that you've got a listener, do something with the result... 
@@ -67,6 +71,7 @@ export default class App extends React.Component {
       })
 
       this.twitch.onContext((context, delta) => {
+        console.log('onContext called', context);
         this.contextUpdate(context, delta)
       })
 
@@ -96,8 +101,6 @@ export default class App extends React.Component {
         this.setState({ phrases: responseJson });
         this.setState({ isLoadingPhrases: false });
       })
-
-    // console.log('this.state.phrase', this.state.phrases);
   }
 
   render() {
@@ -113,46 +116,36 @@ export default class App extends React.Component {
       </React.Fragment>
     );
 
-    const renderList = (
-      <ListGroup>
-        {this.state.phrases.map(item =>
-          <ListGroup.Item className={!isLightTheme ? 'makeMeDark' : ''} key={item.uuid}>
-            <div>{item.phrase}</div>
-            <div className='user-displayName'>{item.displayName}</div>
-          </ListGroup.Item>)}
-      </ListGroup>
-
-      // TODO:
-      // - set a max height on listgroup.item w/ overflow ellipsis if really long
-    );
-
+    // TODO: Move to own file
     const fetchButton = (
-      <button onClick={this.fetchPhrases}>Fetch the results</button>
+      <Button onClick={this.fetchPhrases}>Refresh results</Button>
     )
 
     const shouldRenderList = this.state.finishedLoading && this.state.isVisible && !this.state.isLoadingPhrases;
 
-    // if (this.state.finishedLoading && this.state.isVisible && !this.state.isLoadingPhrases) {
-    //   return (
-    //     <div className="App">
-    //       {renderList}
-    //       {fetchButton}
-    //     </div>
-    //   )
-    // } else {
-    //   return (
-    //     <div className="App">
-    //       {loadingState}
-    //     </div>
-    //   )
-    // }
+    const tabs = !this.state.isLoadingPhrases && (
+      <TabHeader phrases={this.state.phrases} isLightTheme={isLightTheme} shouldRenderList={shouldRenderList} />
+    );
    
+    // const example = (
+    //   <div className={this.state.theme === 'light' ? 'App-light' : 'App-dark'} >
+    //       <p>This is the auth example</p>
+    //       <p>My token is: {this.Authentication.state.token}</p>
+    //       <p>My opaque ID is {this.Authentication.getOpaqueId()}.</p>
+    //       <div>{this.Authentication.isModerator() ? <p>I am currently a mod, and here's a special mod button <input value='mod button' type='button'/></p>  : 'I am currently not a mod.'}</div>
+    //       <p>I have {this.Authentication.hasSharedId() ? `shared my ID, and my user_id is ${this.Authentication.getUserId()}` : 'not shared my ID'}.</p>
+    //       <p>ChannelId is: {this.state.currentChannelId}</p>
+    //       <p>Is broadcaster? {this.twitch.configuration.broadcaster} </p>
+    //       <p>Are bits enabled {this.twitch.bits.showBitsBalance()}</p>
+    //   </div>
+    // );
+    
 
     return (
       <div className={`App ${whichTheme}`}>
         {loadingState}
-        {shouldRenderList && renderList}
-        {shouldRenderList && fetchButton}
+        {tabs}
+        {/* {example} */}
       </div>
     )
 
@@ -161,9 +154,6 @@ export default class App extends React.Component {
 
 
 /* EXAMPLE STUFF
-const renderPhraseList = (
-    <div>Hi</div>
-);
 const example = (
     <div className={this.state.theme === 'light' ? 'App-light' : 'App-dark'} >
         <p>Hello world2!</p>

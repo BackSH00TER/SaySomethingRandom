@@ -25,6 +25,7 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 // TODO: Get secret for JWT (i think)
+// Tutorial: https://dev.twitch.tv/docs/tutorials/extension-101-tutorial-series/jwt
 // const secret = Buffer.from(SECRET, 'base64');
 router.use(cors())
 router.use(bodyParser.json())

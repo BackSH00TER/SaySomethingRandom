@@ -2,19 +2,19 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.App-light{
+.App-light {
     color:#232127;
 }
 
-.App-dark{
+.App-dark {
     color:#e5e3e8;
     background-color: #0e0e10;
 }
 
-.makeMeDark{
+.makeMeDark {
   background-color: #0e0e10;
 }
 
-.user-displayName{
+.user-displayName {
   font-size: 14px;
 }
