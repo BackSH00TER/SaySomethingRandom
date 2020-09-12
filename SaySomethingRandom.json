@@ -1,6 +1,6 @@
 {
   "allowHttpBackend": false,
-  "backendCommand": "",
+  "backendCommand": "npm run start",
   "backendFolderName": "backend",
   "certificateExceptions": [
     {
@@ -20,6 +20,12 @@
       "isEphemeral": false,
       "isOrigin": true,
       "value": "wss://localhost.rig.twitch.tv:8080"
+    },
+    {
+      "isAllowed": true,
+      "isEphemeral": false,
+      "isOrigin": true,
+      "value": "wss://localhost:8080"
     }
   ],
   "extensionViews": [

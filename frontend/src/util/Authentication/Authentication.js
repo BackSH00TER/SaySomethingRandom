@@ -39,6 +39,10 @@ export default class Authentication{
     getOpaqueId(){
         return this.state.opaque_id
     }
+
+    getToken() {
+        return this.state.token
+    }
     
     // set the token in the Authentication componenent state
     // this is naive, and will work with whatever token is returned. under no circumstances should you use this logic to trust private data- you should always verify the token on the backend before displaying that data. 
