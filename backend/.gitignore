@@ -3,3 +3,5 @@ packaged-sam.yaml
 
 # Dependency directories
 node_modules/
+
+secrets.js

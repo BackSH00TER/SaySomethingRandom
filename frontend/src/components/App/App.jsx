@@ -55,6 +55,10 @@ export default class App extends React.Component {
             return { finishedLoading: true, currentChannelId: auth.channelId }
           })
         }
+
+        // I think this needs to go here
+        // THis needs to be called after we are authorized so we can pass the auth token
+        this.fetchPhrases()
       })
 
       // TODO: This might help a bit https://dev.twitch.tv/docs/tutorials/extension-101-tutorial-series/file-structure
@@ -74,9 +78,6 @@ export default class App extends React.Component {
         console.log('onContext called', context);
         this.contextUpdate(context, delta)
       })
-
-      // TODO: Something aint right. Spinner needs to go off here toooo pal
-      this.fetchPhrases();
     }
   }
 
@@ -86,7 +87,7 @@ export default class App extends React.Component {
     }
   }
 
-  // TODO: Move to a different file
+  // TODO: Move API calls to a different file
   fetchPhrases() {
     const ROOTAPIURL = "http://127.0.0.1:3000/"; //"https://rplbgv9ts3.execute-api.us-east-1.amazonaws.com/prod/";
     const channelId = "123455";
@@ -94,7 +95,10 @@ export default class App extends React.Component {
 
     this.setState({ isLoadingPhrases: true }); 
 
-    fetch(url)
+    fetch(url, { 
+      headers: {
+        "Authorization": 'Bearer ' + this.Authentication.getToken()
+    }})
       .then(response => response.json())
       .then(responseJson => {
         console.log('resposnjson', responseJson);
