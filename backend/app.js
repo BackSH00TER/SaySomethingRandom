@@ -88,11 +88,10 @@ router.get('/phrases', async (req, res) => {
 // TODO: Hook up auth / bits
 // Creates/adds a phrase
 router.post('/phrase', async (req, res) => {
-  const decodedJWT = verifyAndDecode(req.headers.authorization);
+  const jwt = req.headers.authorization;
+  const decodedJWT = verifyAndDecode(jwt);
   const {channel_id: channelId, user_id: userId } = decodedJWT;
-
   const displayName = await getUserById(userId);
-
   const body = {
     phrase: req.body.phrase,
     channelId,
@@ -102,18 +101,17 @@ router.post('/phrase', async (req, res) => {
 
   let post = {};
   if (IS_DEV_MODE) {
-    setTimeout(() => {}, 3000); // 3 second delay just for mock
+    setTimeout(() => {}, 500); // delay just for mock
   } else {
-    // Returns empty object {} on success
+    // Returns empty object {} on success (Status 204)
     post = await postPhrase(body); 
 
     // TODO: Return something to show success/failure
+    // TODO: Should be able to cehck that status is 204... possibly just result.status?
     // TODO: Come up with and use common response across all endpoints
   }
 
-
-  // let twitchpubsubPost = await postToTwitchPubSub('newphrase', token, channelId, clientId);
-  // console.log('twitchpubsubPost', twitchpubsubPost);
+  await postToTwitchExtPubSub(jwt, channelId);
 
   res.json(post);
 })
@@ -123,13 +121,55 @@ router.put('/completed', async (req, res) => {
   // let token = app.getToken(req);
   let put = await completePhrase(req.body);
   console.log('put', put);
-  // let twitchpubsubPost = await postToTwitchPubSub('phraseCompleted', token, channelId, clientId);
+  // let twitchpubsubPost = await postToTwitchExtPubSub('phraseCompleted', token, channelId, clientId);
   // console.log('twitchpubsubPost', twitchpubsubPost);
   res.json(put);
 })
 
-const postToTwitchPubSub = async (message, token, channelId, clientId) => {
 
+/**
+ * Posts an updated event to the Twitch Extension PubSub (note: this is different than Twitch PubSub)
+ * Broadcasts the message to the specified channelId, frontend should have a twitch.listen() to listen for the event.
+ * Doc: https://dev.twitch.tv/docs/extensions/reference/#send-extension-pubsub-message
+ * @param token - JWT auth token already containing Bearer + token
+ * @param channelId -  channelId to update w/ message update event
+ */
+const postToTwitchExtPubSub = async (jwtToken, channelId) => {
+  // TODO: Explore sending the new message in the pubsub event body, thus can add to the list w/o having to do a full fetch
+  //      This would be crucial in saving unnecessary database reads if we have access to this already
+  const pubSubPostUrl = `https://api.twitch.tv/extensions/message/${channelId}`;
+  // TODO check pubsub_perms field on the jwt to ensure has the right perms?
+  
+  /**
+   * Required body params for PubSub Post event:
+   *    content_type  | string    | application/json
+   *    message       | string    | message to be sent
+   *    targets       | string[]  | valid values: ("broadcast", "global")
+   */
+  const body = {
+    message: 'NEW_PHRASE_POSTED',
+    targets: ['broadcast'],
+    'content_type': 'application/json'
+  };
+
+  const options = {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+      'Client-ID': ExtensionClientId,
+      Authorization: jwtToken
+    }
+  };
+
+  // Returns status 204 on success
+  const result = await fetch(pubSubPostUrl, options);
+  
+  if (result.status !== 204) {
+    console.log('ERROR posting to Twitch Pub Sub');
+    // TODO: Error handling
+  }
+  return result;
 }
 
 const getPhrasesByChannel = async (channelId) => {

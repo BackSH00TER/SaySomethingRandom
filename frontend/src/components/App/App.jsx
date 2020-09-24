@@ -64,7 +64,12 @@ export default class App extends React.Component {
 
       // TODO: This might help a bit https://dev.twitch.tv/docs/tutorials/extension-101-tutorial-series/file-structure
       this.twitch.listen('broadcast', (target, contentType, body) => {
+        console.log('PUBSUB LISTEN event fired');
         this.twitch.rig.log(`New PubSub message!\n${target}\n${contentType}\n${body}`)
+
+        if (body === 'NEW_PHRASE_POSTED') {
+          console.log('new phrase posted, so lets update the list with the new item');
+        }
         // now that you've got a listener, do something with the result... 
 
         // do something...
