@@ -75,6 +75,7 @@ export const SuggestionForm = ({authToken}) => {
       size="sm"
       show={showModal}
       onHide={() => setModalShow(false)}
+      animation={false}
     >
       <Modal.Header closeButton>
         <Modal.Title>Are you sure you want to send?</Modal.Title>

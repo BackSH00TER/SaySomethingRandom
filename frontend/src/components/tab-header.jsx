@@ -18,7 +18,6 @@ export const TabHeader = ({phrases, isLightTheme, shouldRenderList, authToken}) 
 
 const TopNav = () => {
   const [selected, setSelected] = useState("first");
-  console.log('selected is: ', selected);
 
   return (
     <Nav justify>
