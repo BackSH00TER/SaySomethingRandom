@@ -50,7 +50,8 @@
       "frameSize": {
         "width": 1280,
         "height": 720
-      }
+      },
+      "viewerType": "Broadcaster"
     },
     {
       "id": "2",
@@ -73,7 +74,8 @@
       "frameSize": {
         "width": 1280,
         "height": 720
-      }
+      },
+      "viewerType": "Broadcaster"
     }
   ],
   "frontendCommand": "npm run host",
@@ -97,7 +99,7 @@
     "name": "SaySomethingRandom",
     "panelHeight": 300,
     "privacyPolicyUrl": "",
-    "requestIdentityLink": false,
+    "requestIdentityLink": true,
     "requiredBroadcasterAbilities": [],
     "screenshotUrls": [],
     "sku": "",
@@ -110,37 +112,37 @@
     "viewerSummary": "",
     "viewerUrl": "https://localhost:8080/panel.html",
     "viewerUrls": {
-      "component": "https://localhost:8080/video_component.html",
-      "panel": "https://localhost:8080/panel.html"
+      "panel": "https://localhost:8080/panel.html",
+      "component": "https://localhost:8080/video_component.html"
     },
     "views": {
+      "panel": {
+        "viewerUrl": "https://localhost:8080/panel.html",
+        "height": 300,
+        "canLinkExternalContent": false
+      },
       "component": {
+        "viewerUrl": "https://localhost:8080/video_component.html",
+        "aspectWidth": 0,
         "aspectHeight": 0,
         "aspectRatioX": 300,
         "aspectRatioY": 200,
-        "aspectWidth": 0,
-        "autoscale": true,
-        "canLinkExternalContent": false,
         "scalePixels": 1024,
-        "size": 0,
         "targetHeight": 4000,
-        "viewerUrl": "https://localhost:8080/video_component.html",
+        "size": 0,
         "zoom": false,
-        "zoomPixels": 0
+        "zoomPixels": 0,
+        "canLinkExternalContent": false,
+        "autoScale": true
       },
       "config": {
-        "canLinkExternalContent": false,
-        "viewerUrl": "https://localhost:8080/config.html"
-      },
-      "panel": {
-        "canLinkExternalContent": false,
-        "height": 300,
-        "viewerUrl": "https://localhost:8080/panel.html"
+        "viewerUrl": "https://localhost:8080/config.html",
+        "canLinkExternalContent": false
       }
     },
     "whitelistedConfigUrls": [],
     "whitelistedPanelUrls": []
   },
   "name": "SaySomethingRandom",
-  "version": 1
+  "version": 2
 }

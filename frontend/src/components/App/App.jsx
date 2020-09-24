@@ -57,7 +57,8 @@ export default class App extends React.Component {
         }
 
         // I think this needs to go here
-        // THis needs to be called after we are authorized so we can pass the auth token
+        // THis needs to be called after we are authorized so we can pass the auth token,
+        // actually we want to renderer phrases even if they aren't authorized..
         this.fetchPhrases()
       })
 
@@ -90,7 +91,7 @@ export default class App extends React.Component {
   // TODO: Move API calls to a different file
   fetchPhrases() {
     const ROOTAPIURL = "http://127.0.0.1:3000/"; //"https://rplbgv9ts3.execute-api.us-east-1.amazonaws.com/prod/";
-    const channelId = "123455";
+    const channelId = "123455"; // TODO: Use real channelID
     const url = `${ROOTAPIURL}phrases?channelId=${channelId}`;
 
     this.setState({ isLoadingPhrases: true }); 
@@ -128,7 +129,7 @@ export default class App extends React.Component {
     const shouldRenderList = this.state.finishedLoading && this.state.isVisible && !this.state.isLoadingPhrases;
 
     const tabs = !this.state.isLoadingPhrases && (
-      <TabHeader phrases={this.state.phrases} isLightTheme={isLightTheme} shouldRenderList={shouldRenderList} />
+      <TabHeader phrases={this.state.phrases} isLightTheme={isLightTheme} shouldRenderList={shouldRenderList} authToken={this.Authentication.getToken()} />
     );
    
     // const example = (
