@@ -3,12 +3,14 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+import Toast from 'react-bootstrap/Toast';
 
 import './suggestion-form.css';
 
 export const SuggestionForm = ({authToken}) => {
   const [showModal, setModalShow] = useState(false);
   const [isSuggestionSending, setSuggestionSending] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const suggestionRef = useRef(null);
 
   // TODO: Move the fetch part to a diff file
@@ -44,6 +46,7 @@ export const SuggestionForm = ({authToken}) => {
         console.log('submitPhrase response', resJ);
         setModalShow(false);
         setSuggestionSending(false);
+        setShowToast(true);
         suggestionRef.current.value = null; // resets text
         // TODO: Trigger some sort of success modal
       });
@@ -70,6 +73,14 @@ export const SuggestionForm = ({authToken}) => {
     </Spinner>
   );
 
+  const confirmationModalBodyText = !isSuggestionSending && (
+    <React.Fragment>
+      Once you send, you won't be able to edit the message.
+      There is no guarentee the streamer will read your message.
+      REWORD
+    </React.Fragment>
+  )
+
   const sendConfirmationModal = (
     <Modal
       size="sm"
@@ -81,9 +92,7 @@ export const SuggestionForm = ({authToken}) => {
         <Modal.Title>Are you sure you want to send?</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Once you send, you won't be able to edit the message.
-        There is no guarentee the streamer will read your message.
-        REWORD
+        {confirmationModalBodyText}
         {sendingSpinner}
       </Modal.Body>
       <Modal.Footer>
@@ -94,11 +103,19 @@ export const SuggestionForm = ({authToken}) => {
     </Modal>
   );
 
+  const toastNotification = (
+    <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide>
+      <Toast.Header>Success!</Toast.Header>
+      <Toast.Body>Message successfully sent.</Toast.Body>
+    </Toast>
+  );
+
   return (
     <React.Fragment>
       {suggestionForm}
       {sendSuggestionButton}
       {sendConfirmationModal}
+      {toastNotification}
     </React.Fragment>
   );
 };
