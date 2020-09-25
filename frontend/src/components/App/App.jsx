@@ -67,13 +67,11 @@ export default class App extends React.Component {
         console.log('PUBSUB LISTEN event fired');
         this.twitch.rig.log(`New PubSub message!\n${target}\n${contentType}\n${body}`)
 
-        if (body === 'NEW_PHRASE_POSTED') {
-          console.log('new phrase posted, so lets update the list with the new item');
-        }
-        // now that you've got a listener, do something with the result... 
+        // TODO: Consider just using the response that is returned from the endpoint.
+        //    Might not be necessary to have response go through PubSub response as well
+        const postedPhrase = JSON.parse(body);
 
-        // do something...
-
+        this.updatePhrases(postedPhrase);
       })
 
       this.twitch.onVisibilityChanged((isVisible, _c) => {
@@ -111,6 +109,13 @@ export default class App extends React.Component {
         this.setState({ phrases: responseJson });
         this.setState({ isLoadingPhrases: false });
       })
+  }
+
+  updatePhrases(phraseToAdd) {
+    const currentPhrases = this.state.phrases;
+    const updatedPhrases = [...currentPhrases, phraseToAdd];
+
+    this.setState({ phrases: updatedPhrases });
   }
 
   render() {

@@ -99,21 +99,30 @@ router.post('/phrase', async (req, res) => {
     displayName
   };
 
-  let post = {};
+  let postResult = {};
   if (IS_DEV_MODE) {
+    postResult = {
+      completed: false,
+      phrase: 'MOCK PHRASE',
+      uuid: '12345-6789',
+      channelId: '123455',
+      userId: '123455',
+      displayName: 'Mock user'
+    };
     setTimeout(() => {}, 500); // delay just for mock
   } else {
     // Returns empty object {} on success (Status 204)
-    post = await postPhrase(body); 
+    postResult = await postPhrase(body);
+    console.log('postResult: ', postResult)
 
     // TODO: Return something to show success/failure
     // TODO: Should be able to cehck that status is 204... possibly just result.status?
     // TODO: Come up with and use common response across all endpoints
   }
 
-  await postToTwitchExtPubSub(jwt, channelId);
+  await postToTwitchExtPubSub(jwt, channelId, postResult);
 
-  res.json(post);
+  res.json(postResult);
 })
 
 router.put('/completed', async (req, res) => {
@@ -134,7 +143,7 @@ router.put('/completed', async (req, res) => {
  * @param token - JWT auth token already containing Bearer + token
  * @param channelId -  channelId to update w/ message update event
  */
-const postToTwitchExtPubSub = async (jwtToken, channelId) => {
+const postToTwitchExtPubSub = async (jwtToken, channelId, postResult) => {
   // TODO: Explore sending the new message in the pubsub event body, thus can add to the list w/o having to do a full fetch
   //      This would be crucial in saving unnecessary database reads if we have access to this already
   const pubSubPostUrl = `https://api.twitch.tv/extensions/message/${channelId}`;
@@ -147,7 +156,7 @@ const postToTwitchExtPubSub = async (jwtToken, channelId) => {
    *    targets       | string[]  | valid values: ("broadcast", "global")
    */
   const body = {
-    message: 'NEW_PHRASE_POSTED',
+    message: JSON.stringify(postResult),
     targets: ['broadcast'],
     'content_type': 'application/json'
   };
@@ -190,6 +199,7 @@ const getPhrasesByChannel = async (channelId) => {
   }
 }
 
+// Returns the phrase object that was posted
 const postPhrase = async (phraseBody) => { 
   const {channelId, userId, displayName, phrase} = phraseBody;
   const uuid = uuidv4(); // generates a unique id for the phrase
@@ -205,11 +215,21 @@ const postPhrase = async (phraseBody) => {
     }
   };
 
+  // TODO: once babel is in and can use ES6 use object spread (...body) instead
+  const postedPhrase = {
+    channelId,
+    userId,
+    displayName,
+    phrase,
+    uuid,
+    completed: false
+  };
+
   try {
     console.log('4 writing data to dynamodb')
     const data = await dynamodb.put(params).promise();
     console.log(' the response is', data); // seems like on success doesnt actually return anything?, does throw err if err tho
-    return data;
+    return postedPhrase;
   }
   catch (err) {
     console.log(err);

@@ -5,6 +5,16 @@ import ListGroup from 'react-bootstrap/ListGroup';
   // - set a max height on listgroup.item w/ overflow ellipsis if really long
   // TODO: if no suggestions - render a placeholder
   // TODO: put custom styles in file for just this component
+
+// suggestions: phrase []
+// phrase: {
+//   completed: boolean
+//   phrase: string,
+//   uuid: string,
+//   channelId: string,
+//   userId: string,
+//   displayName: string
+// }
 export const SuggestionsList = ({suggestions, isLightTheme}) => {
   return (
     <ListGroup>
