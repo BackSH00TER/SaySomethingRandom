@@ -19,7 +19,7 @@ export const SuggestionForm = ({authToken}) => {
     const ROOTAPIURL = "http://127.0.0.1:3000"; //"https://rplbgv9ts3.execute-api.us-east-1.amazonaws.com/prod/";
     const url = `${ROOTAPIURL}/phrase`;
 
-    const suggestedPhrase = suggestionRef && suggestionRef.current && suggestionRef.current.value;
+    const suggestedPhrase = suggestionRef?.current?.value;
     if (!suggestedPhrase) {
       console.log(' no phrase suggested');
       // TODO: validation handling here, spit back error to type something before submitting

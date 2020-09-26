@@ -104,7 +104,7 @@ router.post('/phrase', async (req, res) => {
   if (IS_DEV_MODE) {
     postResult = {
       completed: false,
-      phrase: 'MOCK PHRASE',
+      phrase: `MOCK: ${req.body.phrase}`,
       uuid: '12345-6789',
       channelId: '123455',
       userId: '123455',
