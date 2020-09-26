@@ -5,8 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Authentication from '../../util/Authentication/Authentication';
 import { fetchPhrases, FAILED_TO_FETCH } from '../../dataclient/dataclient';
 
-import { TabHeader } from '../tab-header';
-
+import { TabHeader } from '../tabHeader/tab-header';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
@@ -93,7 +92,6 @@ export default class App extends React.Component {
     }
   }
 
-  // TODO: Move API calls to a different file
   async fetchPhrases() {
     const channelId = "123455"; // TODO: Use real channelID
 

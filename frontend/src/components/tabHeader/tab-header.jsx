@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import Tab from 'react-bootstrap/Tab';
 import Nav from 'react-bootstrap/Nav';
 
-import { SuggestionForm } from './suggestionForm/suggestion-form';
-import { SuggestionsList } from './suggestions-list';
+import { SuggestionForm } from '../suggestionForm/suggestion-form';
+import { SuggestionsList } from '../suggestionsList/suggestions-list';
 
 import './tab-header.css';
 
