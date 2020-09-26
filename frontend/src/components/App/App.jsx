@@ -96,10 +96,11 @@ export default class App extends React.Component {
   // TODO: Move API calls to a different file
   async fetchPhrases() {
     const channelId = "123455"; // TODO: Use real channelID
+
     this.setState({ isLoadingPhrases: true }); 
     // TODO: Note this way doesnt work yet, need to get support for babel regeneratorRuntime, etc
     const {data, error} = await fetchPhrases(channelId, this.Authentication.getToken());
-    
+
     if (!!data) {
       this.setState({ phrases: data});
       this.setState({ isLoadingPhrases: false})
@@ -107,6 +108,7 @@ export default class App extends React.Component {
       this.setState({ isLoadingPhrases: false})
       // TODO: setState is error true, render error fetching msg
     }
+
     // const ROOTAPIURL = "http://127.0.0.1:3000/"; //"https://rplbgv9ts3.execute-api.us-east-1.amazonaws.com/prod/";
     // const channelId = "123455"; // TODO: Use real channelID
     // const url = `${ROOTAPIURL}phrases?channelId=${channelId}`;

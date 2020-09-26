@@ -76,6 +76,9 @@ module.exports = (_env,argv)=> {
           test: /\.(js|jsx)$/,
           exclude: /(node_modules|bower_components)/,
           loader: 'babel-loader',
+          options: {
+            plugins: ['@babel/plugin-transform-runtime']
+          }
         },
         {
           test: /\.css$/,

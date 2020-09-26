@@ -14,7 +14,7 @@ export const fetchPhrases = async (channelId, authToken) => {
 
     if (response.status === 200) {
       return {
-        data: response.json(),
+        data: await response.json(),
         error: null
       };
     } else {
