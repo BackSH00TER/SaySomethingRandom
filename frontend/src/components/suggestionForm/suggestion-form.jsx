@@ -7,49 +7,36 @@ import Toast from 'react-bootstrap/Toast';
 
 import './suggestion-form.css';
 
+import { sendPhrase, FAILED_TO_SEND } from '../../dataclient/dataclient';
+
 export const SuggestionForm = ({authToken}) => {
   const [showModal, setModalShow] = useState(false);
   const [isSuggestionSending, setSuggestionSending] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const suggestionRef = useRef(null);
 
-  // TODO: Move the fetch part to a diff file
-  const submitPhrase = () => {
-    console.log('submitPhrase called');
-    const ROOTAPIURL = "http://127.0.0.1:3000"; //"https://rplbgv9ts3.execute-api.us-east-1.amazonaws.com/prod/";
-    const url = `${ROOTAPIURL}/phrase`;
+  const submitPhrase = async () => {
 
     const suggestedPhrase = suggestionRef?.current?.value;
     if (!suggestedPhrase) {
-      console.log(' no phrase suggested');
-      // TODO: validation handling here, spit back error to type something before submitting
+      console.log('no phrase suggested');
+      //TODO: validation handling here, spit back error to type something before submitting
     }
 
-    const body = {
-      phrase: suggestedPhrase
-    };
-  
-    const options = {
-      method: 'POST',
-      body: JSON.stringify(body),
-      headers: {
-        'Content-Type': 'application/json',
-        "Authorization": 'Bearer ' + authToken // TODO: this might be undefined, should try to make suggestionform not render unless authenticated
-      }
-    }
-  
     setSuggestionSending(true);
 
-    fetch(url, options)
-      .then(res => res.json())
-      .then(resJ => {
-        console.log('submitPhrase response', resJ);
-        setModalShow(false);
-        setSuggestionSending(false);
-        setShowToast(true);
-        suggestionRef.current.value = null; // resets text
-        // TODO: Trigger some sort of success modal
-      });
+    const {data, error} = await sendPhrase(suggestedPhrase, authToken);
+
+    if (!!data) { // Success
+      // Close modal and reset sending states
+      setModalShow(false);
+      setSuggestionSending(false);
+      setShowToast(true);
+      suggestionRef.current.value = null; // resets text
+    } else { // Error
+      console.log('Failed to sendPhrase');
+      // TODO: Show error
+    }
   }
 
   const suggestionForm = (

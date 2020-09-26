@@ -108,29 +108,6 @@ export default class App extends React.Component {
       this.setState({ isLoadingPhrases: false})
       // TODO: setState is error true, render error fetching msg
     }
-
-    // const ROOTAPIURL = "http://127.0.0.1:3000/"; //"https://rplbgv9ts3.execute-api.us-east-1.amazonaws.com/prod/";
-    // const channelId = "123455"; // TODO: Use real channelID
-    // const url = `${ROOTAPIURL}phrases?channelId=${channelId}`;
-
-    // this.setState({ isLoadingPhrases: true }); 
-
-    // fetch(url, { 
-    //   headers: {
-    //     "Authorization": 'Bearer ' + this.Authentication.getToken()
-    // }})
-    //   .then(response => {
-    //     console.log('raw response', response);
-    //     return response.json()
-    //   })
-    //   .then(responseJson => {
-    //     console.log('resposnjson', responseJson);
-    //     this.setState({ phrases: responseJson });
-    //     this.setState({ isLoadingPhrases: false });
-    //   })
-    //   .catch(err => {
-    //     console.log('err is', err);
-    //   })
   }
 
   updatePhrases(phraseToAdd) {
