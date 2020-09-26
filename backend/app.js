@@ -20,7 +20,8 @@ const tableName = 'SaySomethingRandom_Phrases';
 const bearerPrefix = 'Bearer ';
 const secret = Buffer.from(ExtensionSecret, 'base64');
 
-const IS_DEV_MODE = true; // Set to true when running locally to prevent calling real services
+// TODO: move this setting into a config file or something that can be imported to other files
+const IS_DEV_MODE = false; // Set to true when running locally to prevent calling real services
 
 app.set('view engine', 'pug')
 

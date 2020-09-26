@@ -3,8 +3,10 @@ import Spinner from 'react-bootstrap/Spinner';
 import Button from 'react-bootstrap/Button';
 
 import Authentication from '../../util/Authentication/Authentication';
+import { fetchPhrases, FAILED_TO_FETCH } from '../../dataclient/dataclient';
 
 import { TabHeader } from '../tab-header';
+
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
@@ -92,23 +94,41 @@ export default class App extends React.Component {
   }
 
   // TODO: Move API calls to a different file
-  fetchPhrases() {
-    const ROOTAPIURL = "http://127.0.0.1:3000/"; //"https://rplbgv9ts3.execute-api.us-east-1.amazonaws.com/prod/";
+  async fetchPhrases() {
     const channelId = "123455"; // TODO: Use real channelID
-    const url = `${ROOTAPIURL}phrases?channelId=${channelId}`;
-
     this.setState({ isLoadingPhrases: true }); 
+    // TODO: Note this way doesnt work yet, need to get support for babel regeneratorRuntime, etc
+    const {data, error} = await fetchPhrases(channelId, this.Authentication.getToken());
+    
+    if (!!data) {
+      this.setState({ phrases: data});
+      this.setState({ isLoadingPhrases: false})
+    } else {
+      this.setState({ isLoadingPhrases: false})
+      // TODO: setState is error true, render error fetching msg
+    }
+    // const ROOTAPIURL = "http://127.0.0.1:3000/"; //"https://rplbgv9ts3.execute-api.us-east-1.amazonaws.com/prod/";
+    // const channelId = "123455"; // TODO: Use real channelID
+    // const url = `${ROOTAPIURL}phrases?channelId=${channelId}`;
 
-    fetch(url, { 
-      headers: {
-        "Authorization": 'Bearer ' + this.Authentication.getToken()
-    }})
-      .then(response => response.json())
-      .then(responseJson => {
-        console.log('resposnjson', responseJson);
-        this.setState({ phrases: responseJson });
-        this.setState({ isLoadingPhrases: false });
-      })
+    // this.setState({ isLoadingPhrases: true }); 
+
+    // fetch(url, { 
+    //   headers: {
+    //     "Authorization": 'Bearer ' + this.Authentication.getToken()
+    // }})
+    //   .then(response => {
+    //     console.log('raw response', response);
+    //     return response.json()
+    //   })
+    //   .then(responseJson => {
+    //     console.log('resposnjson', responseJson);
+    //     this.setState({ phrases: responseJson });
+    //     this.setState({ isLoadingPhrases: false });
+    //   })
+    //   .catch(err => {
+    //     console.log('err is', err);
+    //   })
   }
 
   updatePhrases(phraseToAdd) {
