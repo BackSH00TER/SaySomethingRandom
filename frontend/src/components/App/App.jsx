@@ -109,14 +109,16 @@ export default class App extends React.Component {
   }
 
   async fetchPhrases() {
-    const channelId = "123455"; // TODO: Use real channelID
+    const channelId = this.state.currentChannelId;
 
     this.setState({ isLoadingPhrases: true }); 
-    // TODO: Note this way doesnt work yet, need to get support for babel regeneratorRuntime, etc
+
     const {data, error} = await fetchPhrases(channelId, this.Authentication.getToken());
 
     if (!!data) {
-      this.setState({ phrases: data});
+      const filteredPhrases = this.getNonCompletedPhrases(data);
+
+      this.setState({ phrases: filteredPhrases});
       this.setState({ isLoadingPhrases: false})
     } else {
       this.setState({ isLoadingPhrases: false})
@@ -138,6 +140,11 @@ export default class App extends React.Component {
     const updatedPhrases = currentPhrases.filter(phrase => (completedPhrase.uuid !== phrase.uuid));
 
     this.setState({ phrases: updatedPhrases });
+  }
+
+  // Takes the array of phrases and returns a new array with only phrases that are not completed
+  getNonCompletedPhrases(phraseList) {
+    return phraseList.filter(phrase => !phrase.completed);
   }
 
   render() {
