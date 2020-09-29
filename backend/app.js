@@ -67,22 +67,32 @@ router.get('/sam', (req, res) => {
 router.get('/phrases', async (req, res) => {
   let phrases = [];
   if (IS_DEV_MODE) {
-    phrases = [{
-      completed: false,
-      phrase: 'You should say somethign really funny cuz I am a funny viewer hahaha',
-      uuid: 'b7ce3137-3ba2-4f83-91ec-b6cf719e5345',
-      channelId: '123455',
-      userId: '6546546',
-      displayName: 'loser1459'
-    },
-    {
-      completed: false,
-      phrase: 'Test POST2',
-      uuid: 'f0804227-0bab-464b-8ac8-2b7b6b47fe6f',
-      channelId: '123455',
-      userId: '6546546',
-      displayName: 'randomUserwithLongUserNameThatIsReallyLong'
-    }];
+    phrases = [
+      {
+        completed: false,
+        phrase: 'You should say somethign really funny cuz I am a funny viewer hahaha',
+        uuid: 'b7ce3137-3ba2-4f83-91ec-b6cf719e5345',
+        channelId: '123455',
+        userId: '6546546',
+        displayName: 'loser1459'
+      },
+      {
+        completed: false,
+        phrase: 'Test POST2',
+        uuid: 'f0804227-0bab-464b-8ac8-2b7b6b47fe6f',
+        channelId: '123455',
+        userId: '6546548',
+        displayName: 'randomUserwithLongUserNameThatIsReallyLong'
+      },
+      {
+        completed: true,
+        phrase: 'Completed Post (should be filtered out)',
+        uuid: 'f0804227-0bab-464b-8ac8-2b7b6b4729',
+        channelId: '123455',
+        userId: '6546879',
+        displayName: 'CompletedUser'
+      }
+    ];
   } else {
     phrases = await getPhrasesByChannel(req.query.channelId);
   }

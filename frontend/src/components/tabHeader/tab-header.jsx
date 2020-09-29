@@ -7,11 +7,11 @@ import { SuggestionsList } from '../suggestionsList/suggestions-list';
 
 import './tab-header.css';
 
-export const TabHeader = ({phrases, isLightTheme, shouldRenderList, authToken}) => {
+export const TabHeader = ({phrases, isLightTheme, shouldRenderList, authToken, isMod}) => {
   return (
     <Tab.Container id="main-tabs" defaultActiveKey="first">
       <TopNav />
-      <TabContent phrases={phrases} isLightTheme={isLightTheme} shouldRenderList={shouldRenderList} authToken={authToken} />
+      <TabContent phrases={phrases} isLightTheme={isLightTheme} shouldRenderList={shouldRenderList} authToken={authToken} isMod={isMod} />
     </Tab.Container>
   );
 }
@@ -39,7 +39,7 @@ const TopNav = () => {
 const ConditionalBoldWrapper = ({ condition, children }) =>
   condition ? <strong>{children}</strong> : children;
 
-const TabContent = ({phrases, isLightTheme, shouldRenderList, authToken}) => {
+const TabContent = ({phrases, isLightTheme, shouldRenderList, authToken, isMod}) => {
   return (
     <Tab.Content>
       <Tab.Pane eventKey="first">
@@ -48,6 +48,7 @@ const TabContent = ({phrases, isLightTheme, shouldRenderList, authToken}) => {
             suggestions={phrases}
             isLightTheme={isLightTheme}
             authToken={authToken}
+            isMod={isMod}
           />
         )}
         {/* {shouldRenderList && fetchButton} */}

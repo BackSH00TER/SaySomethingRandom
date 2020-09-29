@@ -21,25 +21,25 @@ import { markPhraseCompleted } from '../../dataclient/dataclient';
 //   userId: string,
 //   displayName: string
 // }
-export const SuggestionsList = ({suggestions, isLightTheme, authToken}) => {
+export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod}) => {
   const markCompleted = async (phrase) => {
     const messageId = phrase.uuid;
     // TODO: show isDeletingSpinner? Or just remove it right away as a client lie?
-    const { data, error } = await markPhraseCompleted(messageId ,authToken);
+    const { data, error } = await markPhraseCompleted(messageId, authToken);
     console.log('data result:', data);
     if (!!data) {
       // TODO: call to update list and remove this item
     }
   }
 
-  const acceptButton = (phrase) => (
+  const acceptButton = (phrase) => isMod && (
     // TODO: modify some padding and styles
     <Button variant='link' onClick={() => markCompleted(phrase)} style={{padding: 0}}>
       <CheckSquareFill color={'#00bcd4'} size={20} />
     </Button>
   );
   
-  const rejectButton = (
+  const rejectButton = isMod && (
     <Button variant='link' onClick={() => {console.log('accept clicked')}} style={{padding: 0}}>
       <XSquareFill color={'#00bcd4'} size={20} />
     </Button>

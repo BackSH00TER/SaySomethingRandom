@@ -161,7 +161,13 @@ export default class App extends React.Component {
     const shouldRenderList = this.state.finishedLoading && this.state.isVisible && !this.state.isLoadingPhrases;
 
     const tabs = !this.state.isLoadingPhrases && (
-      <TabHeader phrases={this.state.phrases} isLightTheme={isLightTheme} shouldRenderList={shouldRenderList} authToken={this.Authentication.getToken()} />
+      <TabHeader
+        phrases={this.state.phrases}
+        isLightTheme={isLightTheme}
+        shouldRenderList={shouldRenderList}
+        authToken={this.Authentication.getToken()}
+        isMod={this.Authentication.isModerator()}
+      />
     );
    
     // const example = (
