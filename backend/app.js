@@ -20,6 +20,11 @@ const tableName = 'SaySomethingRandom_Phrases';
 const bearerPrefix = 'Bearer ';
 const secret = Buffer.from(ExtensionSecret, 'base64');
 
+const EventType = {
+  COMPLETED_PHRASE_EVENT: 'COMPLETED_PHRASE_EVENT',
+  SEND_PHRASE_EVENT: 'SEND_PHRASE_EVENT'
+};
+
 // TODO: move this setting into a config file or something that can be imported to other files
 const IS_DEV_MODE = true; // Set to true when running locally to prevent calling real services
 
@@ -121,19 +126,33 @@ router.post('/phrase', async (req, res) => {
     // TODO: Come up with and use common response across all endpoints
   }
 
-  await postToTwitchExtPubSub(jwt, channelId, postResult);
+  await postToTwitchExtPubSub(jwt, channelId, postResult, EventType.SEND_PHRASE_EVENT);
 
   res.json(postResult);
 })
 
 router.put('/completed', async (req, res) => {
-  // let {channelId, clientId} = req.body.auth;
-  // let token = app.getToken(req);
-  let put = await completePhrase(req.body);
-  console.log('put', put);
-  // let twitchpubsubPost = await postToTwitchExtPubSub('phraseCompleted', token, channelId, clientId);
-  // console.log('twitchpubsubPost', twitchpubsubPost);
-  res.json(put);
+  const jwt = req.headers.authorization;
+  const decodedJWT = verifyAndDecode(jwt);
+  const {channel_id: channelId } = decodedJWT;
+  const body = {
+    channelId: channelId,
+    messageId: req.body.messageId
+  };
+
+  let result = {};
+  if (IS_DEV_MODE) {
+    result = {
+      channelId,
+      uuid: req.body.messageId
+    };
+  } else {
+    result = await completePhrase(body);
+  }
+
+  await postToTwitchExtPubSub(jwt, channelId, result, EventType.COMPLETED_PHRASE_EVENT);
+
+  res.json(result);
 })
 
 
@@ -141,10 +160,12 @@ router.put('/completed', async (req, res) => {
  * Posts an updated event to the Twitch Extension PubSub (note: this is different than Twitch PubSub)
  * Broadcasts the message to the specified channelId, frontend should have a twitch.listen() to listen for the event.
  * Doc: https://dev.twitch.tv/docs/extensions/reference/#send-extension-pubsub-message
- * @param token - JWT auth token already containing Bearer + token
+ * @param jwtToken - JWT auth token already containing Bearer + token
  * @param channelId -  channelId to update w/ message update event
+ * @param messagePayload - object containing the message attributes
+ * @param eventType - represents the type of event that is being sent
  */
-const postToTwitchExtPubSub = async (jwtToken, channelId, postResult) => {
+const postToTwitchExtPubSub = async (jwtToken, channelId, messagePayload, eventType) => {
   // TODO: Explore sending the new message in the pubsub event body, thus can add to the list w/o having to do a full fetch
   //      This would be crucial in saving unnecessary database reads if we have access to this already
   const pubSubPostUrl = `https://api.twitch.tv/extensions/message/${channelId}`;
@@ -156,8 +177,13 @@ const postToTwitchExtPubSub = async (jwtToken, channelId, postResult) => {
    *    message       | string    | message to be sent
    *    targets       | string[]  | valid values: ("broadcast", "global")
    */
+  const message = {
+    eventType,
+    payload: messagePayload
+  };
+
   const body = {
-    message: JSON.stringify(postResult),
+    message: JSON.stringify(message),
     targets: ['broadcast'],
     'content_type': 'application/json'
   };
@@ -241,6 +267,10 @@ const postPhrase = async (phraseBody) => {
 const completePhrase = async (args) => {
   const {channelId, messageId} = args;
 
+  /** ReturnValues:
+   *   "ALL_NEW" - Returns all attributes of the update item
+   *   "UPDATED_NEW" - Returns only the udpated attribute (in this case 'completed')
+   */ 
   const params = {
     TableName: tableName,
     Key: {
@@ -251,13 +281,14 @@ const completePhrase = async (args) => {
     ExpressionAttributeValues: {
       ":completed": true
     },
-    ReturnValues: "UPDATED_NEW"
+    ReturnValues: "ALL_NEW"
   };
 
   try {
+    // Returns all attributes of the updated item
     const data = await dynamodb.update(params).promise();
-    console.log(data);
-    return data;
+
+    return data.Attributes;
   }
   catch (err) {
     console.log(err);

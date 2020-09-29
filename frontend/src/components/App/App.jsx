@@ -67,12 +67,28 @@ export default class App extends React.Component {
       this.twitch.listen('broadcast', (target, contentType, body) => {
         console.log('PUBSUB LISTEN event fired');
         this.twitch.rig.log(`New PubSub message!\n${target}\n${contentType}\n${body}`)
+        const EventType = {
+          COMPLETED_PHRASE_EVENT: 'COMPLETED_PHRASE_EVENT',
+          SEND_PHRASE_EVENT: 'SEND_PHRASE_EVENT'
+        };
 
-        // TODO: Consider just using the response that is returned from the endpoint.
-        //    Might not be necessary to have response go through PubSub response as well
-        const postedPhrase = JSON.parse(body);
+        /**
+         * ParsedEvent should look like: 
+         * {
+         *    eventType: Type EventType,
+         *    payload: {message attributes} 
+         * }
+         */
+        const parsedEvent = JSON.parse(body);
+        console.log('parsedEvent', parsedEvent);
 
-        this.updatePhrases(postedPhrase);
+        if (parsedEvent.eventType === EventType.SEND_PHRASE_EVENT) {
+          this.addPhraseToList(parsedEvent.payload);
+        } else if (parsedEvent.eventType === EventType.COMPLETED_PHRASE_EVENT) {
+          this.removePhraseFromList(parsedEvent.payload);
+        } else {
+          // Something gone wrong, there aint no other events. yet...
+        }
       })
 
       this.twitch.onVisibilityChanged((isVisible, _c) => {
@@ -108,9 +124,18 @@ export default class App extends React.Component {
     }
   }
 
-  updatePhrases(phraseToAdd) {
+  // Updates the current list of phrases and appends the new phrase to the end of the array
+  addPhraseToList(phraseToAdd) {
     const currentPhrases = this.state.phrases;
     const updatedPhrases = [...currentPhrases, phraseToAdd];
+
+    this.setState({ phrases: updatedPhrases });
+  }
+
+  // Removes the completed phrase from the list of phrases
+  removePhraseFromList(completedPhrase) {
+    const currentPhrases = this.state.phrases;
+    const updatedPhrases = currentPhrases.filter(phrase => (completedPhrase.uuid !== phrase.uuid));
 
     this.setState({ phrases: updatedPhrases });
   }

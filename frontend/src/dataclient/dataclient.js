@@ -75,3 +75,37 @@ export const sendPhrase = async (phrase, authToken) => {
     }
   }
 }
+
+export const markPhraseCompleted = async (messageId, authToken) => {
+  const url = `${ROOT_API_URL}/completed`;
+
+  const body = { messageId };
+  const options = {
+    method: 'PUT',
+    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer ' + authToken
+    }
+  };
+
+  try {
+    const response = await fetch(url, options);
+    const parsedResponse = await response.json();
+
+    if (response.status === 200) {
+      return {
+        data: parsedResponse,
+        error: null
+      };
+    } else {
+      throw new Error(response);
+    }
+  } catch (error) {
+    console.log(`Failed to send phrase: ${error}`);
+    return {
+      data: null,
+      error: FAILED_TO_SEND
+    }
+  }
+}

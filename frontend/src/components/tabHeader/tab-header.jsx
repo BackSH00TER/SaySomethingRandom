@@ -43,10 +43,13 @@ const TabContent = ({phrases, isLightTheme, shouldRenderList, authToken}) => {
   return (
     <Tab.Content>
       <Tab.Pane eventKey="first">
-        {shouldRenderList && (<SuggestionsList
-          suggestions={phrases}
-          isLightTheme={isLightTheme}
-        />)}
+        {shouldRenderList && (
+          <SuggestionsList
+            suggestions={phrases}
+            isLightTheme={isLightTheme}
+            authToken={authToken}
+          />
+        )}
         {/* {shouldRenderList && fetchButton} */}
       </Tab.Pane>
       <Tab.Pane eventKey="second">
