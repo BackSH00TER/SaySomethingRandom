@@ -99,7 +99,7 @@ export const markPhraseCompleted = async (messageId, authToken) => {
         error: null
       };
     } else {
-      throw new Error(response);
+      throw new Error(parsedResponse);
     }
   } catch (error) {
     console.log(`Failed to send phrase: ${error}`);

@@ -144,7 +144,15 @@ router.post('/phrase', async (req, res) => {
 router.put('/completed', async (req, res) => {
   const jwt = req.headers.authorization;
   const decodedJWT = verifyAndDecode(jwt);
-  const {channel_id: channelId } = decodedJWT;
+  let {channel_id: channelId, role } = decodedJWT;
+
+  // Need to verify here that user isMod, we check clientSide but can't trust that
+  // If user is not mod or broadcaster, fail the action and don't proceed
+  if (!(role === 'broadcaster' || role === 'moderator')) {
+    console.log('Error: User is not the broadcaster or a mod and cannont complete the completePhrase action');
+    res.status(400).json('USER_IS_NOT_MOD');
+  }
+
   const body = {
     channelId: channelId,
     messageId: req.body.messageId
