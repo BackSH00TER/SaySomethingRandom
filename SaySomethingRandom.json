@@ -84,7 +84,7 @@
     "anchor": "panel",
     "assetUrls": [],
     "authorName": "BackSH00TER",
-    "bitsEnabled": false,
+    "bitsEnabled": true,
     "canInstall": true,
     "configUrl": "https://localhost:8080/config.html",
     "configurationLocation": "none",

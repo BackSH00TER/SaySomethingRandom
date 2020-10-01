@@ -40,13 +40,16 @@ export const fetchPhrases = async (channelId, authToken) => {
 /**
  * Sends a phrase to be stored in the db
  * @param {string} phrase - the phrase to send
+ * @param {obj} transaction - the completed bits transaction
  * @param {string} authToken - The jwt token (not including 'Bearer ')
  * @returns {object} { data: phrase | null, error: FAILED_TO_FETCH | null }
  */
-export const sendPhrase = async (phrase, authToken) => {
+export const sendPhrase = async (phrase, transaction, authToken) => {
   const url = `${ROOT_API_URL}/phrase`;
-
-  const body = { phrase };
+  const body = {
+    phrase,
+    transactionReceipt: transaction.transactionReceipt || ''
+  };
   const options = {
     method: 'POST',
     body: JSON.stringify(body),

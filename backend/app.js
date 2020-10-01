@@ -104,6 +104,12 @@ router.get('/phrases', async (req, res) => {
 // TODO: Hook up auth / bits
 // Creates/adds a phrase
 router.post('/phrase', async (req, res) => {
+  // If the req body has a transactionReceipt, this means that the user completed a bits transaction
+  // The transactionReceipt is a JWT, and we need to verify that it is valid
+  if (req.body.transactionReceipt) { // TODO: This needs to be tested still
+    console.log('Validating transactionReceipt...');
+    verifyAndDecode(req.body.transactionReceipt);
+  }
   const jwt = req.headers.authorization;
   const decodedJWT = verifyAndDecode(jwt);
   const {channel_id: channelId, user_id: userId } = decodedJWT;
