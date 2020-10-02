@@ -52,30 +52,6 @@
         "height": 720
       },
       "viewerType": "Broadcaster"
-    },
-    {
-      "id": "2",
-      "label": "",
-      "channelId": "32799121",
-      "configurationAnchor": "panel",
-      "displayChannelName": "backsh00ter",
-      "type": "component",
-      "features": {
-        "isBitsEnabled": false,
-        "isChatEnabled": false,
-        "isSubscriptionStatusAvailable": false
-      },
-      "linked": false,
-      "linkedUserId": "",
-      "mode": "viewer",
-      "isPopout": false,
-      "role": "Broadcaster",
-      "orientation": "Portrait",
-      "frameSize": {
-        "width": 1280,
-        "height": 720
-      },
-      "viewerType": "Broadcaster"
     }
   ],
   "frontendCommand": "npm run host",
@@ -97,7 +73,7 @@
     "installationCount": -42,
     "liveConfigUrl": "",
     "name": "SaySomethingRandom",
-    "panelHeight": 300,
+    "panelHeight": 500,
     "privacyPolicyUrl": "",
     "requestIdentityLink": true,
     "requiredBroadcasterAbilities": [],
@@ -112,28 +88,13 @@
     "viewerSummary": "",
     "viewerUrl": "https://localhost:8080/panel.html",
     "viewerUrls": {
-      "panel": "https://localhost:8080/panel.html",
-      "component": "https://localhost:8080/video_component.html"
+      "panel": "https://localhost:8080/panel.html"
     },
     "views": {
       "panel": {
         "viewerUrl": "https://localhost:8080/panel.html",
-        "height": 300,
+        "height": 500,
         "canLinkExternalContent": false
-      },
-      "component": {
-        "viewerUrl": "https://localhost:8080/video_component.html",
-        "aspectWidth": 0,
-        "aspectHeight": 0,
-        "aspectRatioX": 300,
-        "aspectRatioY": 200,
-        "scalePixels": 1024,
-        "targetHeight": 4000,
-        "size": 0,
-        "zoom": false,
-        "zoomPixels": 0,
-        "canLinkExternalContent": false,
-        "autoScale": true
       },
       "config": {
         "viewerUrl": "https://localhost:8080/config.html",
