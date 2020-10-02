@@ -85,6 +85,14 @@ router.get('/phrases', async (req, res) => {
         displayName: 'randomUserwithLongUserNameThatIsReallyLong'
       },
       {
+        completed: false,
+        phrase: 'This is a suggestion that is a lot of characters and will wrap multiple lines. This suggestions is so long that it will have to be truncated and ellipsis will be displayed at the end. When you hover over this phrase the full phrase will be displayed in the title.',
+        uuid: 'f0804227-0bab-464b-8ac8-2b7b6b47f8756',
+        channelId: '123455',
+        userId: '6546548',
+        displayName: 'UserWithATrulyExtremelyVeryOutstandinlyLongNameThatWillMostCertainlyExceedTheWidth'
+      },
+      {
         completed: true,
         phrase: 'Completed Post (should be filtered out)',
         uuid: 'f0804227-0bab-464b-8ac8-2b7b6b4729',

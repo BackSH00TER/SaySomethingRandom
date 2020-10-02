@@ -1,0 +1,27 @@
+.user-displayName {
+  font-size: 12px;
+  max-width: 300px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.msg-action-buttons {
+  float: right;
+}
+
+.button-action {
+  padding: 0 !important;
+}
+
+.button-action:focus {
+  box-shadow: none !important;
+}
+
+.button-action-accept:hover {
+  fill: #66BB6A;
+}
+
+.button-action-reject:hover {
+  fill: #EF5350;
+}

@@ -6,6 +6,8 @@ import { CheckSquareFill, XSquareFill } from 'react-bootstrap-icons';
 
 import { markPhraseCompleted } from '../../dataclient/dataclient';
 
+import './suggestions-list.css';
+
 /**
  * Renders the main list of suggestions
  * Displays the suggestion and the user who posted it
@@ -17,22 +19,31 @@ import { markPhraseCompleted } from '../../dataclient/dataclient';
  */
 export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod}) => {
   const acceptButton = (phrase) => isMod && (
-    <Button variant='link' onClick={() => markCompleted(phrase, authToken)} style={{padding: 0}}>
-      <CheckSquareFill color={'#00bcd4'} size={20} />
+    <Button
+      variant='link'
+      className='button-action'
+      onClick={() => markCompleted(phrase, authToken)}
+    >
+      <CheckSquareFill className='button-action-accept' color={'#43A047'} size={20} />
     </Button>
   );
   
   const rejectButton = isMod && ( // TODO: wire up - if decide to use this
-    <Button variant='link' onClick={() => {console.log('accept clicked')}} style={{padding: 0}}>
-      <XSquareFill color={'#00bcd4'} size={20} />
+    <Button
+      variant='link'
+      className='button-action'
+      onClick={() => {console.log('accept clicked')}}
+    >
+      <XSquareFill className='button-action-reject' color={'#E53935'} size={20} />
     </Button>
   );
 
   return (
-    <ListGroup>
+    <ListGroup variant='flush'>
       {!!suggestions.length ? suggestions.map(item =>
-        <ListGroup.Item className={!isLightTheme ? 'makeMeDark' : ''} key={item.uuid}>
-          <div>{item.phrase} {acceptButton(item)} {rejectButton} </div>
+        <ListGroup.Item className={'list-item'} key={item.uuid}>
+          <div>{item.phrase}</div>
+          <div className='msg-action-buttons'>{acceptButton(item)} {rejectButton}</div>
           {suggestedByUser(item)}
         </ListGroup.Item>)
         : <span>PLACEHOLDER</span>  
@@ -42,7 +53,7 @@ export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod}) =
 }
 
 const suggestedByUser = (item) => (
-  <div className='user-displayName'>
+  <div className='user-displayName' title={`Suggested by: ${item.displayName}`}>
     Suggested by: {item.displayName}
   </div>
 );
