@@ -160,11 +160,6 @@ export default class App extends React.Component {
       </React.Fragment>
     );
 
-    // TODO: Move to own file
-    const fetchButton = (
-      <Button onClick={this.fetchPhrases}>Refresh results</Button>
-    )
-
     const shouldRenderList = this.state.finishedLoading && this.state.isVisible && !this.state.isLoadingPhrases;
 
     const tabs = !this.state.isLoadingPhrases && (
@@ -195,7 +190,6 @@ export default class App extends React.Component {
       <div className={`App ${whichTheme}`}>
         {loadingState}
         {tabs}
-        {/* {example} */}
       </div>
     )
 

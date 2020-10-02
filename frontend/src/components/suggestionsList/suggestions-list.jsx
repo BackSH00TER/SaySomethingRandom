@@ -2,49 +2,31 @@ import React from 'react'
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
 
-import { CheckSquareFill, XSquareFill, CheckCircleFill, XCircleFill } from 'react-bootstrap-icons';
+import { CheckSquareFill, XSquareFill } from 'react-bootstrap-icons';
 
 import { markPhraseCompleted } from '../../dataclient/dataclient';
 
-
- // TODO:
-  // - set a max height on listgroup.item w/ overflow ellipsis if really long
-  // TODO: if no suggestions - render a placeholder
-  // TODO: put custom styles in file for just this component
-
-// suggestions: phrase []
-// phrase: {
-//   completed: boolean
-//   phrase: string,
-//   uuid: string,
-//   channelId: string,
-//   userId: string,
-//   displayName: string
-// }
+/**
+ * Renders the main list of suggestions
+ * Displays the suggestion and the user who posted it
+ * Moderators are shown an option to mark an item as completed
+ * @param {object} props
+ *    props.suggestions - array of suggestions [ { completed: boolean, phrase: string, uuid: string, channelId: string, userId: string, displayName: string}]
+ *    props.authToken - (string) - the jwt authToken (backend to verify)
+ *    props.isMod - (boolean) - is the user a moderator of the channel 
+ */
 export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod}) => {
-  const markCompleted = async (phrase) => {
-    const messageId = phrase.uuid;
-    // TODO: show isDeletingSpinner? Or just remove it right away as a client lie?
-    const { data, error } = await markPhraseCompleted(messageId, authToken);
-    console.log('data result:', data);
-    if (!!data) {
-      // TODO: call to update list and remove this item
-    }
-  }
-
   const acceptButton = (phrase) => isMod && (
-    // TODO: modify some padding and styles
-    <Button variant='link' onClick={() => markCompleted(phrase)} style={{padding: 0}}>
+    <Button variant='link' onClick={() => markCompleted(phrase, authToken)} style={{padding: 0}}>
       <CheckSquareFill color={'#00bcd4'} size={20} />
     </Button>
   );
   
-  const rejectButton = isMod && (
+  const rejectButton = isMod && ( // TODO: wire up - if decide to use this
     <Button variant='link' onClick={() => {console.log('accept clicked')}} style={{padding: 0}}>
       <XSquareFill color={'#00bcd4'} size={20} />
     </Button>
   );
-
 
   return (
     <ListGroup>
@@ -64,3 +46,13 @@ const suggestedByUser = (item) => (
     Suggested by: {item.displayName}
   </div>
 );
+
+const markCompleted = async (phrase, authToken) => {
+  const messageId = phrase.uuid;
+  // TODO: show isDeletingSpinner? Or just remove it right away as a client lie?
+  const { data, error } = await markPhraseCompleted(messageId, authToken);
+  console.log('data result:', data);
+  if (!!data) {
+    // TODO: call to update list and remove this item
+  }
+}

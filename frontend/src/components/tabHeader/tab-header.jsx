@@ -14,7 +14,7 @@ export const TabHeader = ({phrases, isLightTheme, shouldRenderList, authToken, i
       <TabContent phrases={phrases} isLightTheme={isLightTheme} shouldRenderList={shouldRenderList} authToken={authToken} isMod={isMod} />
     </Tab.Container>
   );
-}
+};
 
 const TopNav = () => {
   const [selected, setSelected] = useState("first");
@@ -23,21 +23,29 @@ const TopNav = () => {
     <Nav justify>
       <Nav.Item>
         <ConditionalBoldWrapper condition={selected === "first"} >
-          <Nav.Link className={selected === "first" ? "selected-nav-item" : ""} eventKey="first" onClick={() => setSelected("first")}>Suggestions</Nav.Link>
+          <Nav.Link
+            className={selected === "first" ? "selected-nav-item" : ""}
+            eventKey="first"
+            onClick={() => setSelected("first")}
+          >
+            Suggestions
+          </Nav.Link>
         </ConditionalBoldWrapper>
       </Nav.Item>
       <Nav.Item>
         <ConditionalBoldWrapper condition={selected === "second"}>
-          <Nav.Link className={selected === "second" ? "selected-nav-item" : ""} eventKey="second" onClick={() => setSelected("second")}>Add Suggestion</Nav.Link>
+          <Nav.Link
+            className={selected === "second" ? "selected-nav-item" : ""}
+            eventKey="second"
+            onClick={() => setSelected("second")}
+          >
+            Add Suggestion
+          </Nav.Link>
         </ConditionalBoldWrapper>
       </Nav.Item>
     </Nav>
   );
 };
-
-// Conditionally wraps given children in a bold tag
-const ConditionalBoldWrapper = ({ condition, children }) =>
-  condition ? <strong>{children}</strong> : children;
 
 const TabContent = ({phrases, isLightTheme, shouldRenderList, authToken, isMod}) => {
   return (
@@ -51,11 +59,14 @@ const TabContent = ({phrases, isLightTheme, shouldRenderList, authToken, isMod})
             isMod={isMod}
           />
         )}
-        {/* {shouldRenderList && fetchButton} */}
       </Tab.Pane>
       <Tab.Pane eventKey="second">
         <SuggestionForm authToken={authToken} />
       </Tab.Pane>
     </Tab.Content>
   );
-}
+};
+
+// Conditionally wraps given children in a bold tag
+const ConditionalBoldWrapper = ({ condition, children }) =>
+  condition ? <strong>{children}</strong> : children;

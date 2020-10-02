@@ -1,53 +1,40 @@
-import React, {useEffect, useState, useRef} from 'react'
+import React, {useState, useRef} from 'react'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
-import Toast from 'react-bootstrap/Toast';
 
 import { CheckCircleFill } from 'react-bootstrap-icons';
 
+import { sendPhrase, FAILED_TO_SEND } from '../../dataclient/dataclient';
 import { IS_DEV_MODE } from '../../util/constants';
 
 import './suggestion-form.css';
-
-import { sendPhrase, FAILED_TO_SEND } from '../../dataclient/dataclient';
 
 export const SuggestionForm = ({authToken}) => {
   const [isSuggestionSending, setSuggestionSending] = useState(false);
   const [isSuccessfulSend, setSuccessfulSend] = useState(false);
   const suggestionRef = useRef(null);
   const twitch = window.Twitch ? window.Twitch.ext : null;
-  
-  /**
-   * Steps for transacting bits
-   * 1. Get selected productSku - (hardcoded for now)
-   * 2. On click of Submit
-   * 2a. Call useBits(productSku) - kicks of twitch bits transaction flow (including if they need to purchase more bits, log in, etc)
-   * 2aa. Should also have its own confirmation modal (if so remove mine)
-   * 3. On confirmation, listen to twitch.bits.onTransactionComplete((transaction) => {...})
-   * 4. Get transaction item, and call postPhrase endpoint w/ transaction attached
-   * 5. On backend - verify transaction.transactionReceipt (jwt) is valid before adding to DB
-   * 5a. Make sure to respond with error/fail if jwt was not valid for some reason
-   * 6. Then use our own jwt to send to pubsub? (optional that it is doing)
-   */
 
   const productSku = "submit_suggestion_100"; // TODO: get from config service once it is set up
 
+  // ----- ACTIONS ------
   // Begins the bits transaction flow
   const startTransaction = async (suggestedPhrase) => {
-    console.log('startTransaction called');
     if (!productSku) {
       // TODO: err handling
       console.log('No sku received, what product to use, throw err, prevent further actions');
     }
 
     if (twitch) {
-      // TODO: setUseLoopback(true) skips the useBits and returns after 1.5
-      // TODO: fails to go through the bit transacation flow locally, might just have to test this one a test channel??
-      IS_DEV_MODE && twitch.bits.setUseLoopback(true); // TODO: only do this if in debug mode while running locally
+      /**
+       * To locally test the bits transaction flow you must call twitch.bits.setUseLoopback(true).
+       * This will skip twitch's modal flow when twitch.bits.useBits(sku) is called and returns true after a 1.5 second timeout
+       */
+      IS_DEV_MODE && twitch.bits.setUseLoopback(true);
       twitch.bits.useBits(productSku);
 
-      // console.log('isbitsenabled', twitch.features.isBitsEnabled); // not sure why this alwasy retursn false, maybe b/c its locally test?
+      // TODO: Add a check for twitch.features.isBitsEnabled - note currently it always returns false
 
       twitch.bits.onTransactionComplete((transaction) => {
         console.log('onTransactionComplete() called, received transaction:', transaction);
@@ -62,7 +49,6 @@ export const SuggestionForm = ({authToken}) => {
   };
 
   const onClickSend = async () => {
-    console.log('onclicksend')
     const suggestedPhrase = suggestionRef?.current?.value;
     if (!suggestedPhrase) {
       console.log('no phrase suggested');
@@ -75,11 +61,9 @@ export const SuggestionForm = ({authToken}) => {
   };
 
   const submitPhrase = async (suggestedPhrase, transaction) => {
-    console.log('submitphrase')
     const {data, error} = await sendPhrase(suggestedPhrase, transaction, authToken);
 
-    if (!!data) { // Success
-      // Reset sending state and mark as success
+    if (!!data) { // Success - Reset sending state and mark as success
       setSuggestionSending(false);
       setSuccessfulSend(true);
       // suggestionRef.current.value = null; // resets text
@@ -87,7 +71,14 @@ export const SuggestionForm = ({authToken}) => {
       console.log('Failed to sendPhrase');
       // TODO: Show error
     }
-  }
+  };
+
+  const resetState = () => {
+    setSuggestionSending(false);
+    setSuccessfulSend(false);
+  };
+
+  // ----- COMPONENTS ------
 
   const suggestionForm = !isSuggestionSending && !isSuccessfulSend && (
     <Form>
@@ -100,7 +91,7 @@ export const SuggestionForm = ({authToken}) => {
 
   const infoText = !isSuggestionSending && !isSuccessfulSend && (
     <em>
-      Note: There is no guarentee that the streamer will use your suggestion.
+      Note: There is no guarantee that the streamer will use your suggestion.
     </em>
   );
 
@@ -123,32 +114,11 @@ export const SuggestionForm = ({authToken}) => {
     </Spinner>
   );
 
-  const resetState = () => {
-    setSuggestionSending(false);
-    setSuccessfulSend(false);
-  }
-
-  // TODO: onClick -> change to suggestionsListTab and reset flags on this screen
-  // TODO: Might not even need this button?
-  const viewSuggestionsButton = isSuccessfulSend && (
-    <Button variant="secondary">
-      View Suggestions
-    </Button>
-  );
-  
-  // TODO: onClick -> reset flags on this screen
   const postAnotherButton = isSuccessfulSend && (
     <Button variant="primary" onClick={() => resetState()}>
       Post Another
     </Button>
   );
-
-  // const toastNotification = (
-  //   <Toast onClose={() => setSuccessfulSend(false)} show={isSuccessfulSend} delay={3000} autohide>
-  //     <Toast.Header>Success!</Toast.Header>
-  //     <Toast.Body>Message successfully sent.</Toast.Body>
-  //   </Toast>
-  // );
 
   return (
     <React.Fragment>
@@ -157,9 +127,7 @@ export const SuggestionForm = ({authToken}) => {
       {sendingSpinner}
       {successMessage}
       {postAnotherButton}
-      {/* {viewSuggestionsButton} */}
       {sendSuggestionButton}
-      {/* {toastNotification} */}
     </React.Fragment>
   );
 };
