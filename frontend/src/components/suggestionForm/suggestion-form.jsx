@@ -1,9 +1,10 @@
 import React, {useEffect, useState, useRef} from 'react'
 import Form from 'react-bootstrap/Form';
-import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Toast from 'react-bootstrap/Toast';
+
+import { CheckCircleFill } from 'react-bootstrap-icons';
 
 import { IS_DEV_MODE } from '../../util/constants';
 
@@ -12,9 +13,8 @@ import './suggestion-form.css';
 import { sendPhrase, FAILED_TO_SEND } from '../../dataclient/dataclient';
 
 export const SuggestionForm = ({authToken}) => {
-  const [showModal, setModalShow] = useState(false);
   const [isSuggestionSending, setSuggestionSending] = useState(false);
-  const [showToast, setShowToast] = useState(false);
+  const [isSuccessfulSend, setSuccessfulSend] = useState(false);
   const suggestionRef = useRef(null);
   const twitch = window.Twitch ? window.Twitch.ext : null;
   
@@ -56,12 +56,10 @@ export const SuggestionForm = ({authToken}) => {
     
       twitch.bits.onTransactionCancelled((transaction) => {
         console.log('onTransactiononTransactionCancelled()) called, received transaction:', transaction);
+        // TODO: if user cancels, need to stop the spinner, and reset
       });
     }
   };
-
-  
-
 
   const onClickSend = async () => {
     console.log('onclicksend')
@@ -81,18 +79,17 @@ export const SuggestionForm = ({authToken}) => {
     const {data, error} = await sendPhrase(suggestedPhrase, transaction, authToken);
 
     if (!!data) { // Success
-      // Close modal and reset sending states
-      setModalShow(false);
+      // Reset sending state and mark as success
       setSuggestionSending(false);
-      setShowToast(true);
-      suggestionRef.current.value = null; // resets text
+      setSuccessfulSend(true);
+      // suggestionRef.current.value = null; // resets text
     } else { // Error
       console.log('Failed to sendPhrase');
       // TODO: Show error
     }
   }
 
-  const suggestionForm = (
+  const suggestionForm = !isSuggestionSending && !isSuccessfulSend && (
     <Form>
       <Form.Group controlId="suggestionForm">
         <Form.Label as='h3' className='text-center header'>Say Something Random</Form.Label>
@@ -101,8 +98,21 @@ export const SuggestionForm = ({authToken}) => {
     </Form>
   );
 
-  const sendSuggestionButton = (
-    <Button block onClick={() => setModalShow(true)} >
+  const infoText = !isSuggestionSending && !isSuccessfulSend && (
+    <em>
+      Note: There is no guarentee that the streamer will use your suggestion.
+    </em>
+  );
+
+  const successMessage = isSuccessfulSend && (
+    <div>
+      <CheckCircleFill color={'green'} size={'100px'}></CheckCircleFill>
+      <p> Suggestion successfully sent!</p>
+    </div>
+  );
+
+  const sendSuggestionButton = !isSuccessfulSend && (
+    <Button block onClick={() => onClickSend()} disabled={isSuggestionSending} >
       Send suggestion
     </Button>
   );
@@ -113,49 +123,43 @@ export const SuggestionForm = ({authToken}) => {
     </Spinner>
   );
 
-  const confirmationModalBodyText = !isSuggestionSending && (
-    <React.Fragment>
-      Once you send, you won't be able to edit the message.
-      There is no guarentee the streamer will read your message.
-      REWORD
-    </React.Fragment>
-  )
+  const resetState = () => {
+    setSuggestionSending(false);
+    setSuccessfulSend(false);
+  }
 
-  const sendConfirmationModal = (
-    <Modal
-      size="sm"
-      show={showModal}
-      onHide={() => setModalShow(false)}
-      animation={false}
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Are you sure you want to send?</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {confirmationModalBodyText}
-        {sendingSpinner}
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setModalShow(false)}>Cancel</Button>
-        <Button onClick={() => onClickSend()}>Confirm</Button>
-        {/* Show TOAST on success popup from bottom */}
-      </Modal.Footer>
-    </Modal>
+  // TODO: onClick -> change to suggestionsListTab and reset flags on this screen
+  // TODO: Might not even need this button?
+  const viewSuggestionsButton = isSuccessfulSend && (
+    <Button variant="secondary">
+      View Suggestions
+    </Button>
+  );
+  
+  // TODO: onClick -> reset flags on this screen
+  const postAnotherButton = isSuccessfulSend && (
+    <Button variant="primary" onClick={() => resetState()}>
+      Post Another
+    </Button>
   );
 
-  const toastNotification = (
-    <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide>
-      <Toast.Header>Success!</Toast.Header>
-      <Toast.Body>Message successfully sent.</Toast.Body>
-    </Toast>
-  );
+  // const toastNotification = (
+  //   <Toast onClose={() => setSuccessfulSend(false)} show={isSuccessfulSend} delay={3000} autohide>
+  //     <Toast.Header>Success!</Toast.Header>
+  //     <Toast.Body>Message successfully sent.</Toast.Body>
+  //   </Toast>
+  // );
 
   return (
     <React.Fragment>
       {suggestionForm}
+      {infoText}
+      {sendingSpinner}
+      {successMessage}
+      {postAnotherButton}
+      {/* {viewSuggestionsButton} */}
       {sendSuggestionButton}
-      {sendConfirmationModal}
-      {toastNotification}
+      {/* {toastNotification} */}
     </React.Fragment>
   );
 };
