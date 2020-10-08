@@ -37,3 +37,12 @@
   */
   margin-left: 100.75px;
 }
+
+.form-group-container {
+  padding: 0 8px;
+}
+
+.textarea-styles {
+  max-height: 300px;
+  min-height: 50px;
+}

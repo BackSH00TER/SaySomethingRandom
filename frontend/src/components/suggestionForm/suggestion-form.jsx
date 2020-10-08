@@ -118,9 +118,10 @@ export const SuggestionForm = ({authToken}) => {
 
   const suggestionForm = !isSuggestionSending && !isSuccessfulSend && (
     <Form>
-      <Form.Group controlId="suggestionForm">
+      <Form.Group controlId="suggestionForm" className='form-group-container'>
         <Form.Label>Suggestion:</Form.Label>
         <Form.Control
+          className='textarea-styles'
           as="textarea"
           rows="5"
           placeholder="Enter your suggestion"
