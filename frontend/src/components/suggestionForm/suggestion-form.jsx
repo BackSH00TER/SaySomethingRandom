@@ -80,54 +80,78 @@ export const SuggestionForm = ({authToken}) => {
 
   // ----- COMPONENTS ------
 
+  const header = (
+    <h3 className='text-center'>Say Something Random</h3>
+  );
+
   const suggestionForm = !isSuggestionSending && !isSuccessfulSend && (
     <Form>
       <Form.Group controlId="suggestionForm">
-        <Form.Label as='h3' className='text-center header'>Say Something Random</Form.Label>
-        <Form.Control as="textarea" rows="3" placeholder="Enter your suggestion" ref={suggestionRef} />
+        <Form.Label>Suggestion:</Form.Label>
+        <Form.Control
+          as="textarea"
+          rows="5"
+          placeholder="Enter your suggestion"
+          ref={suggestionRef}
+          aria-describedby="suggestionFormHelpBlock"
+        />
+        <Form.Text id="suggestionFormHelpBlock" muted>
+          Your suggestion must be less than 300 characters and follow Twitch TOS. All transactions are final.
+        </Form.Text>
       </Form.Group>
     </Form>
   );
 
-  const infoText = !isSuggestionSending && !isSuccessfulSend && (
-    <em>
-      Note: There is no guarantee that the streamer will use your suggestion.
-    </em>
-  );
-
   const successMessage = isSuccessfulSend && (
-    <div>
+    <div className='text-center success-message'>
       <CheckCircleFill color={'green'} size={'100px'}></CheckCircleFill>
       <p> Suggestion successfully sent!</p>
     </div>
   );
 
-  const sendSuggestionButton = !isSuccessfulSend && (
-    <Button block onClick={() => onClickSend()} disabled={isSuggestionSending} >
+  const sendSuggestionButton = !isSuccessfulSend && !isSuggestionSending && (
+    <Button
+      className='send-button text-center'
+      block
+      onClick={() => onClickSend()}
+    >
       Send suggestion
     </Button>
   );
 
   const sendingSpinner = isSuggestionSending && (
-    <Spinner animation="border">
-      <span className='sr-only'>Loading...</span>
-    </Spinner>
+    <div className='spinner-container'>
+      <Spinner animation="border" className='sending-spinner'>
+        <span className='sr-only'>Saving...</span>
+      </Spinner>
+      <div className='text-center'>Saving ...</div>
+    </div>
   );
 
   const postAnotherButton = isSuccessfulSend && (
-    <Button variant="primary" onClick={() => resetState()}>
+    <Button
+      className='post-another-button'
+      variant="primary"
+      onClick={() => resetState()}
+    >
       Post Another
     </Button>
   );
 
   return (
     <React.Fragment>
-      {suggestionForm}
-      {infoText}
-      {sendingSpinner}
-      {successMessage}
-      {postAnotherButton}
-      {sendSuggestionButton}
+      <div className='header-region'>
+        {header}
+      </div>
+      <div className='form-region'>
+        {suggestionForm}
+        {sendingSpinner}
+        {successMessage}
+        {postAnotherButton}
+      </div>
+      <div className='footer-region'>
+        {sendSuggestionButton}
+      </div>
     </React.Fragment>
   );
 };

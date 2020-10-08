@@ -1,3 +1,39 @@
-.header {
-  padding: 15px 0px
+.header-region {
+  height: 50px;
+}
+
+.form-region {
+  height: 372px;
+}
+
+.footer-region {
+  height: 38px;
+}
+
+.spinner-container {
+  padding-top: 50px
+}
+
+.sending-spinner {
+  width: 5em !important;
+  height: 5em !important;
+  /* Hacky way to center spinner 
+  (320width panel - 80width spinner) / 2
+  */
+  margin-left: 120px;
+}
+
+.success-message {
+  padding-top: 50px;
+}
+
+.send-button {
+  border-radius: 0 !important;
+}
+
+.post-another-button {
+  /* Hacky way to center button 
+  (320width panel - 118.5width button) / 2
+  */
+  margin-left: 100.75px;
 }

@@ -14,3 +14,16 @@
 .makeMeDark {
   background-color: #0e0e10;
 }
+
+.spinner-container {
+  padding-top: 50px
+}
+
+.sending-spinner {
+  width: 5em !important;
+  height: 5em !important;
+  /* Hacky way to center spinner 
+  (320width panel - 80width spinner) / 2
+  */
+  margin-left: 120px;
+}

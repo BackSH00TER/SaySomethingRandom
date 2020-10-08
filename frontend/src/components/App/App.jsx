@@ -152,12 +152,12 @@ export default class App extends React.Component {
     const whichTheme = isLightTheme ? 'App-light' : 'App-dark'; // TODO: rename this variable
     
     const loadingState = this.state.isLoadingPhrases && (
-      <React.Fragment>
-        <Spinner animation="border">
+      <div className='spinner-container'>
+        <Spinner animation="border" className='sending-spinner'>
           <span className='sr-only'>Loading...</span>
         </Spinner>
-        <div>Loading...</div>
-      </React.Fragment>
+        <div className='text-center'>Loading...</div>
+      </div>
     );
 
     const shouldRenderList = this.state.finishedLoading && this.state.isVisible && !this.state.isLoadingPhrases;
