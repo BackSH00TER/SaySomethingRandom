@@ -13,6 +13,7 @@ import './suggestion-form.css';
 export const SuggestionForm = ({authToken}) => {
   const [isSuggestionSending, setSuggestionSending] = useState(false);
   const [isSuccessfulSend, setSuccessfulSend] = useState(false);
+  const [validationMessage, setValidationMessage] = useState({isValid: true, message: ''});
   const suggestionRef = useRef(null);
   const twitch = window.Twitch ? window.Twitch.ext : null;
 
@@ -50,9 +51,11 @@ export const SuggestionForm = ({authToken}) => {
 
   const onClickSend = async () => {
     const suggestedPhrase = suggestionRef?.current?.value;
-    if (!suggestedPhrase) {
-      console.log('no phrase suggested');
-      //TODO: validation handling here, spit back error to type something before submitting
+
+    const isValid = isContentValid(suggestedPhrase);
+    if (!isValid) {
+      console.log("content not valid so breaking early")
+      return;
     }
 
     setSuggestionSending(true);
@@ -78,6 +81,35 @@ export const SuggestionForm = ({authToken}) => {
     setSuccessfulSend(false);
   };
 
+  // Client side validatation of content meets requirements
+  // - No empty phrase
+  // - 300 characters max
+  // - no TOS breakage (Future)
+  // TODO: need to have an onChange w/ debounce that fires to update to valid once valid
+  const isContentValid = (suggestedPhrase) => {
+    if (!suggestedPhrase) {
+      setValidationMessage({
+        isValid: false,
+        message: 'You must enter a suggestion before sending!'
+      });
+      return false;
+    }
+
+    if (suggestedPhrase.length > 300) {
+      setValidationMessage({
+        isValid: false,
+        message: 'Your suggestion must be less than 300 characters.'
+      });
+      return false;
+    }
+
+    setValidationMessage({
+      isValid: true,
+      message: 'Your suggestion is valid.'
+    });
+    return true;
+  }
+
   // ----- COMPONENTS ------
 
   const header = (
@@ -94,10 +126,14 @@ export const SuggestionForm = ({authToken}) => {
           placeholder="Enter your suggestion"
           ref={suggestionRef}
           aria-describedby="suggestionFormHelpBlock"
+          maxLength='300'
+          required
+          isInvalid={!validationMessage.isValid}
         />
-        <Form.Text id="suggestionFormHelpBlock" muted>
+        <Form.Control.Feedback type={validationMessage.isValid ? 'valid' : 'invalid'}>{validationMessage.message}</Form.Control.Feedback>
+        {/* <Form.Text id="suggestionFormHelpBlock" muted>
           Your suggestion must be less than 300 characters and follow Twitch TOS. All transactions are final.
-        </Form.Text>
+        </Form.Text> */}
       </Form.Group>
     </Form>
   );
