@@ -30,3 +30,7 @@
 .button-action-reject:hover {
   fill: #EF5350;
 }
+
+.placeholder {
+  padding-top: 50px;
+}

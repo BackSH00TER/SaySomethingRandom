@@ -2,7 +2,11 @@ import React from 'react'
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
 
-import { CheckSquareFill, XSquareFill } from 'react-bootstrap-icons';
+import {
+  CheckSquareFill,
+  XSquareFill,
+  CardList
+} from 'react-bootstrap-icons';
 
 import { markPhraseCompleted } from '../../dataclient/dataclient';
 
@@ -38,17 +42,34 @@ export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod}) =
     </Button>
   );
 
-  return (
+  const noSuggestionsPlaceHolder = !suggestions.length && (
+    <div className="text-center placeholder">
+      <h3>No Suggestions</h3>
+      <CardList color={'#03a9f4'} size={90} />
+      
+      <p>Be the first to add a suggestion!</p>
+    </div>
+  );
+
+  const listGroupItems = !!suggestions.length && (
     <ListGroup variant='flush'>
-      {!!suggestions.length ? suggestions.map(item =>
+      {suggestions.map(item =>
         <ListGroup.Item className='dark-list-item' key={item.uuid}>
-          <div>{item.phrase}</div>
-          <div className='msg-action-buttons'>{acceptButton(item)} {rejectButton}</div>
+         <div>{item.phrase}</div>
+          <div className='msg-action-buttons'>
+            {acceptButton(item)} {rejectButton}
+          </div>
           {suggestedByUser(item)}
         </ListGroup.Item>)
-        : <span>PLACEHOLDER</span>  
       }
     </ListGroup>
+  );
+
+  return (
+    <React.Fragment>
+      {noSuggestionsPlaceHolder}
+      {listGroupItems}
+    </React.Fragment>
   );
 }
 
