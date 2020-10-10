@@ -81,6 +81,22 @@ export const SuggestionForm = ({authToken}) => {
     setSuccessfulSend(false);
   };
 
+  const onChangeForm = () => {
+    if (validationMessage.isValid) {
+      // If the message already valid don't do anything
+      return;
+    }
+
+    const suggestedPhrase = suggestionRef?.current?.value;
+    if (!!suggestedPhrase) {
+      // If we have a phrase clear the validation
+      setValidationMessage({
+        isValid: true,
+        message: 'Your suggestion is valid.'
+      });
+    }
+  }
+
   // Client side validation of content meets requirements
   // - No empty phrase
   // - 300 characters max
@@ -129,6 +145,7 @@ export const SuggestionForm = ({authToken}) => {
           maxLength='300'
           required
           isInvalid={!validationMessage.isValid}
+          onChange={() => onChangeForm()}
         />
         <Form.Control.Feedback type={validationMessage.isValid ? 'valid' : 'invalid'}>{validationMessage.message}</Form.Control.Feedback>
         <Form.Text id="suggestionFormHelpBlock" muted>
