@@ -41,7 +41,7 @@ export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod}) =
   return (
     <ListGroup variant='flush'>
       {!!suggestions.length ? suggestions.map(item =>
-        <ListGroup.Item className={'list-item'} key={item.uuid}>
+        <ListGroup.Item className='dark-list-item' key={item.uuid}>
           <div>{item.phrase}</div>
           <div className='msg-action-buttons'>{acceptButton(item)} {rejectButton}</div>
           {suggestedByUser(item)}

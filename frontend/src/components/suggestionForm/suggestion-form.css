@@ -1,9 +1,11 @@
 .header-region {
   height: 50px;
+  padding-top: 8px;
 }
 
 .form-region {
   height: 372px;
+  padding-top: 8px;
 }
 
 .footer-region {
@@ -27,8 +29,21 @@
   padding-top: 50px;
 }
 
+.message-padding {
+  padding-top: 8px;
+}
+
 .send-button {
   border-radius: 0 !important;
+  background-color: #03a9f4 !important;
+}
+
+.send-button:hover {
+  background-color: #29B6F6 !important;
+}
+
+.send-button:focus {
+  background-color: #29B6F6 !important;
 }
 
 .post-another-button {
@@ -36,6 +51,15 @@
   (320width panel - 118.5width button) / 2
   */
   margin-left: 100.75px;
+  background-color: #03a9f4 !important;
+}
+
+.post-another-button:hover {
+  background-color: #29B6F6 !important;
+}
+
+.post-another-button:focus {
+  background-color: #29B6F6 !important;
 }
 
 .form-group-container {

@@ -81,7 +81,7 @@ export const SuggestionForm = ({authToken}) => {
     setSuccessfulSend(false);
   };
 
-  // Client side validatation of content meets requirements
+  // Client side validation of content meets requirements
   // - No empty phrase
   // - 300 characters max
   // - no TOS breakage (Future)
@@ -119,7 +119,6 @@ export const SuggestionForm = ({authToken}) => {
   const suggestionForm = !isSuggestionSending && !isSuccessfulSend && (
     <Form>
       <Form.Group controlId="suggestionForm" className='form-group-container'>
-        <Form.Label>Suggestion:</Form.Label>
         <Form.Control
           className='textarea-styles'
           as="textarea"
@@ -132,17 +131,17 @@ export const SuggestionForm = ({authToken}) => {
           isInvalid={!validationMessage.isValid}
         />
         <Form.Control.Feedback type={validationMessage.isValid ? 'valid' : 'invalid'}>{validationMessage.message}</Form.Control.Feedback>
-        {/* <Form.Text id="suggestionFormHelpBlock" muted>
+        <Form.Text id="suggestionFormHelpBlock" muted>
           Your suggestion must be less than 300 characters and follow Twitch TOS. All transactions are final.
-        </Form.Text> */}
+        </Form.Text>
       </Form.Group>
     </Form>
   );
 
   const successMessage = isSuccessfulSend && (
     <div className='text-center success-message'>
-      <CheckCircleFill color={'green'} size={'100px'}></CheckCircleFill>
-      <p> Suggestion successfully sent!</p>
+      <CheckCircleFill color={'#43A047'} size={'90px'}></CheckCircleFill>
+      <p className='message-padding'> Suggestion successfully sent!</p>
     </div>
   );
 

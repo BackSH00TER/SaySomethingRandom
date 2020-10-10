@@ -19,8 +19,12 @@ export const TabHeader = ({phrases, isLightTheme, shouldRenderList, authToken, i
 const TopNav = () => {
   const [selected, setSelected] = useState("first");
 
+  const onSelectItem = (item) => {
+    setSelected(item);
+  }
+
   return (
-    <Nav justify variant="pills" className="tab-header">
+    <Nav justify variant="pills" onSelect={(item) => onSelectItem(item)} className="tab-header">
       <Nav.Item>
         <Nav.Link
           className={selected === "first" ? "selected-nav-item selected-left" : "nav-item-plain"}

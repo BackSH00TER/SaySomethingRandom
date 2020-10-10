@@ -187,7 +187,7 @@ export default class App extends React.Component {
     
 
     return (
-      <div className={`App ${whichTheme}`}>
+      <div className={`App dark-theme`}>
         {loadingState}
         {tabs}
       </div>

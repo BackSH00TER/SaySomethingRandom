@@ -1,26 +1,30 @@
 .nav-item-plain {
   border-radius: 0 !important;
   border-bottom: 2px solid #0277bd;
-  color: black;
+  color: white;
 
   padding-bottom: 6px !important;
 }
 
-/* TODO: Should the hover be the same color as selected? */
 .nav-item-plain:hover {
-  background-color: #03a9f4 !important;
+  background-color: #757575 !important;
   color: white;
 }
 
 .nav-item-plain:focus {
-  background-color: #03a9f4 !important;
+  background-color: #757575 !important;
   color: white;
+  outline: none;
 }
 
 .selected-nav-item {
   border-radius: 0 !important;
   background-color: #03a9f4 !important;
   color: white;
+}
+
+.selected-nav-item:focus {
+  outline: none;
 }
 
 .selected-right {

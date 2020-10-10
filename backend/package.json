@@ -12,6 +12,7 @@
   },
   "scripts": {
     "start": "node app.local.js",
+    "start-api": "sam local start-api",
     "config": "node ./scripts/configure.js",
     "deconfig": "node ./scripts/deconfigure.js",
     "local": "node scripts/local",

@@ -1,3 +1,8 @@
+.dark-list-item {
+  background-color: #242424 !important;
+  border-color: #dcdcdc !important;
+}
+
 .user-displayName {
   font-size: 12px;
   max-width: 300px;
