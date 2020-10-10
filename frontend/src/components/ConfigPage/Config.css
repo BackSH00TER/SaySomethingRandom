@@ -1,11 +1,24 @@
-.Config{
+.Config {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.Config-light{
+.Config-light {
     color:#232127;
 }
 
-.Config-dark{
+.Config-dark {
     color:#e5e3e8;
+}
+
+.tooltip .tooltip-inner {
+   color: #181818;
+   background-color: #fff;
+   border: 1px solid #03a9f4;
+} 
+.tooltip.bs-tooltip-bottom > .arrow::before {
+  border-bottom-color: #03a9f4;
+} 
+
+.info-circle {
+  margin-left: 4px;
 }

@@ -85,6 +85,6 @@ const markCompleted = async (phrase, authToken) => {
   const { data, error } = await markPhraseCompleted(messageId, authToken);
   console.log('data result:', data);
   if (!!data) {
-    // TODO: call to update list and remove this item
+    // TODO: call to update list and remove this item - handled by the pubsub event
   }
 }
