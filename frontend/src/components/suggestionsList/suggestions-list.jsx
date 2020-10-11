@@ -20,9 +20,11 @@ import './suggestions-list.css';
  *    props.suggestions - array of suggestions [ { completed: boolean, phrase: string, uuid: string, channelId: string, userId: string, displayName: string}]
  *    props.authToken - (string) - the jwt authToken (backend to verify)
  *    props.isMod - (boolean) - is the user a moderator of the channel 
+ *    props.allowModControl - (boolean) - should the mods be allowed to control accept/rejct - setting comes from the config service
  */
-export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod}) => {
-  const acceptButton = (phrase) => isMod && (
+export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod, allowModControl, isBroadcaster}) => {
+  const shouldShowButton = isBroadcaster || (isMod && allowModControl);
+  const acceptButton = (phrase) => shouldShowButton && (
     <Button
       variant='link'
       className='button-action'
@@ -32,7 +34,7 @@ export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod}) =
     </Button>
   );
   
-  const rejectButton = isMod && ( // TODO: wire up - if decide to use this
+  const rejectButton = shouldShowButton && ( // TODO: wire up - if decide to use this
     <Button
       variant='link'
       className='button-action'

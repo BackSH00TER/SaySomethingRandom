@@ -24,7 +24,9 @@ export default class App extends React.Component {
       theme: 'light',
       isVisible: true,
       phrases: [],
-      currentChannelId: ''
+      currentChannelId: '',
+      productSku: '',
+      allowModControl: true
     }
   }
 
@@ -99,6 +101,25 @@ export default class App extends React.Component {
         console.log('onContext called', context);
         this.contextUpdate(context, delta)
       })
+
+      this.twitch.configuration.onChanged(() => {
+        console.log('configuration.onChanged called from app.jsx');
+        let config = this.twitch.configuration?.broadcaster?.content || {};
+
+        console.log('   config from config.onchanged', config);
+        try {
+          config = JSON.parse(config);
+          console.log('   config parsed', config);
+        } catch (error) {
+          console.log('error parsing config');
+          config = {}
+        }
+
+        this.setState({
+          productSku: config.bitsPriceSku,
+          allowModControl: config.allowModControl === "true" // config.allowModControl is a string, converting to boolean
+        })
+      })
     }
   }
 
@@ -169,6 +190,9 @@ export default class App extends React.Component {
         shouldRenderList={shouldRenderList}
         authToken={this.Authentication.getToken()}
         isMod={this.Authentication.isModerator()}
+        isBroadcaster={this.Authentication.isBroadcaster()}
+        allowModControl={this.state.allowModControl}
+        productSku={this.state.productSku}
       />
     );
    

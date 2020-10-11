@@ -107,7 +107,7 @@
     "bitsEnabled": true,
     "canInstall": true,
     "configUrl": "https://localhost:8080/config.html",
-    "configurationLocation": "none",
+    "configurationLocation": "hosted",
     "description": "",
     "eulaTosUrl": "",
     "hasChatSupport": false,
@@ -138,7 +138,7 @@
       "panel": {
         "viewerUrl": "https://localhost:8080/panel.html",
         "height": 500,
-        "canLinkExternalContent": false
+        "canLinkExternalContent": true
       },
       "config": {
         "viewerUrl": "https://localhost:8080/config.html",
@@ -146,7 +146,9 @@
       }
     },
     "whitelistedConfigUrls": [],
-    "whitelistedPanelUrls": []
+    "whitelistedPanelUrls": [
+      "twitch.tv"
+    ]
   },
   "name": "SaySomethingRandom",
   "version": 2

@@ -12,6 +12,7 @@ export default class Authentication{
             opaque_id,
             user_id:false,
             isMod:false,
+            isBroadcaster:false,
             role:""
         }
     }
@@ -20,11 +21,15 @@ export default class Authentication{
         return this.state.opaque_id[0]==='U'? true : false
     }
 
-    // This does guarantee the user is a moderator- this is fairly simple to bypass - so pass the JWT and verify
+    // This does not guarantee the user is a moderator- this is fairly simple to bypass - so pass the JWT and verify
     // server-side that this is true. This, however, allows you to render client-side UI for users without holding on a backend to verify the JWT. 
     // Additionally, this will only show if the user shared their ID, otherwise it will return false. 
     isModerator(){
         return this.state.isMod
+    }
+
+    isBroadcaster() {
+        return this.state.isBroadcaster
     }
 
     // similar to mod status, this isn't always verifiable, so have your backend verify before proceeding. 
@@ -48,14 +53,21 @@ export default class Authentication{
     // this is naive, and will work with whatever token is returned. under no circumstances should you use this logic to trust private data- you should always verify the token on the backend before displaying that data. 
     setToken(token,opaque_id){
         let isMod = false
+        let isBroadcaster = false
         let role = ""
         let user_id = ""
 
         try {
             let decoded = jwt.decode(token)
             
-            if(decoded.role === 'broadcaster' || decoded.role === 'moderator'){
-                isMod = true
+            
+            if(decoded.role === 'moderator') {
+              isMod = true
+            }
+
+            if(decoded.role === 'broadcaster') {
+              isBroadcaster = true
+              isMod = true
             }
 
             user_id = decoded.user_id
@@ -69,6 +81,7 @@ export default class Authentication{
             token,
             opaque_id,
             isMod,
+            isBroadcaster,
             user_id,
             role
         }

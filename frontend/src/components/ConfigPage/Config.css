@@ -8,6 +8,7 @@
 
 .Config-dark {
     color:#e5e3e8;
+    background-color: #242424 !important;
 }
 
 .tooltip .tooltip-inner {
@@ -21,4 +22,8 @@
 
 .info-circle {
   margin-left: 4px;
+}
+
+.save-button {
+  width: 100px;
 }

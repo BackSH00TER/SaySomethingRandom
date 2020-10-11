@@ -10,19 +10,20 @@ import { IS_DEV_MODE } from '../../util/constants';
 
 import './suggestion-form.css';
 
-export const SuggestionForm = ({authToken}) => {
+export const SuggestionForm = ({authToken, productSku}) => {
   const [isSuggestionSending, setSuggestionSending] = useState(false);
   const [isSuccessfulSend, setSuccessfulSend] = useState(false);
   const [validationMessage, setValidationMessage] = useState({isValid: true, message: ''});
   const suggestionRef = useRef(null);
   const twitch = window.Twitch ? window.Twitch.ext : null;
-
-  const productSku = "submit_suggestion_100"; // TODO: get from config service once it is set up
+  
+  const selectedProductSku = productSku || "submit_suggestion_100";
+  console.log('productSku', productSku, 'selectedproductsku', selectedProductSku);
 
   // ----- ACTIONS ------
   // Begins the bits transaction flow
   const startTransaction = async (suggestedPhrase) => {
-    if (!productSku) {
+    if (!selectedProductSku) {
       // TODO: err handling
       console.log('No sku received, what product to use, throw err, prevent further actions');
     }
@@ -33,7 +34,7 @@ export const SuggestionForm = ({authToken}) => {
        * This will skip twitch's modal flow when twitch.bits.useBits(sku) is called and returns true after a 1.5 second timeout
        */
       IS_DEV_MODE && twitch.bits.setUseLoopback(true);
-      twitch.bits.useBits(productSku);
+      twitch.bits.useBits(selectedProductSku);
 
       // TODO: Add a check for twitch.features.isBitsEnabled - note currently it always returns false
 

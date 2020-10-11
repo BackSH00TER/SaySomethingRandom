@@ -7,11 +7,20 @@ import { SuggestionsList } from '../suggestionsList/suggestions-list';
 
 import './tab-header.css';
 
-export const TabHeader = ({phrases, isLightTheme, shouldRenderList, authToken, isMod}) => {
+export const TabHeader = ({phrases, isLightTheme, shouldRenderList, authToken, isMod, productSku, allowModControl, isBroadcaster}) => {
   return (
     <Tab.Container id="main-tabs" defaultActiveKey="first">
       <TopNav />
-      <TabContent phrases={phrases} isLightTheme={isLightTheme} shouldRenderList={shouldRenderList} authToken={authToken} isMod={isMod} />
+      <TabContent
+        phrases={phrases}
+        isLightTheme={isLightTheme}
+        shouldRenderList={shouldRenderList}
+        authToken={authToken}
+        isMod={isMod}
+        isBroadcaster={isBroadcaster}
+        allowModControl={allowModControl}
+        productSku={productSku}
+      />
     </Tab.Container>
   );
 };
@@ -47,7 +56,7 @@ const TopNav = () => {
   );
 };
 
-const TabContent = ({phrases, isLightTheme, shouldRenderList, authToken, isMod}) => {
+const TabContent = ({phrases, isLightTheme, shouldRenderList, authToken, isMod, productSku, allowModControl, isBroadcaster}) => {
   return (
     <Tab.Content>
       <Tab.Pane eventKey="first">
@@ -57,11 +66,13 @@ const TabContent = ({phrases, isLightTheme, shouldRenderList, authToken, isMod})
             isLightTheme={isLightTheme}
             authToken={authToken}
             isMod={isMod}
+            isBroadcaster={isBroadcaster}
+            allowModControl={allowModControl}
           />
         )}
       </Tab.Pane>
       <Tab.Pane eventKey="second">
-        <SuggestionForm authToken={authToken} />
+        <SuggestionForm authToken={authToken} productSku={productSku} />
       </Tab.Pane>
     </Tab.Content>
   );
