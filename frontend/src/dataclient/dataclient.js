@@ -110,7 +110,7 @@ export const markPhraseCompleted = async (messageId, authToken) => {
       throw new Error(parsedResponse);
     }
   } catch (error) {
-    console.log(`Failed to send phrase: ${error}`);
+    console.log(`Failed to mark phrase completed: ${error}`);
     return {
       data: null,
       error: FAILED_TO_SEND

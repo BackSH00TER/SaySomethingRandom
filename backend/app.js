@@ -65,6 +65,7 @@ router.get('/sam', (req, res) => {
 // Requires request must pass channelId
 // Expected usage: `apiUrl/phrases?channelId=${channelId}`
 router.get('/phrases', async (req, res) => {
+  console.log('Endpoint /phrases, getting phrases...');
   let phrases = [];
   if (IS_DEV_MODE) {
     phrases = [
@@ -102,22 +103,25 @@ router.get('/phrases', async (req, res) => {
       }
     ];
   } else {
+    console.log('Endpoint /phrases called with channelId: ', req.query.channelId);
     phrases = await getPhrasesByChannel(req.query.channelId);
   }
 
-  console.log('array of phrases', phrases);
+  console.log(`Phrases for channelId: ${req.query.channelId} : ${phrases}`);
   res.json(phrases);
 })
 
-// TODO: Hook up auth / bits
 // Creates/adds a phrase
 router.post('/phrase', async (req, res) => {
+  console.log('Endpoint /phrase, beginning phrase post...');
   // If the req body has a transactionReceipt, this means that the user completed a bits transaction
   // The transactionReceipt is a JWT, and we need to verify that it is valid
-  if (req.body.transactionReceipt) { // TODO: This needs to be tested still
+  if (req.body.transactionReceipt) { // TODO: This needs to be tested still and log something if its not a valid transactionreceipt
     console.log('Validating transactionReceipt...');
     verifyAndDecode(req.body.transactionReceipt);
   }
+
+
   const jwt = req.headers.authorization;
   const decodedJWT = verifyAndDecode(jwt);
   const {channel_id: channelId, user_id: userId } = decodedJWT;
@@ -143,19 +147,22 @@ router.post('/phrase', async (req, res) => {
   } else {
     // Returns empty object {} on success (Status 204)
     postResult = await postPhrase(body);
-    console.log('postResult: ', postResult)
+    console.log('Phrase posted:', postResult)
 
     // TODO: Return something to show success/failure
     // TODO: Should be able to cehck that status is 204... possibly just result.status?
     // TODO: Come up with and use common response across all endpoints
   }
 
+  console.log('Posting PubSub event...');
   await postToTwitchExtPubSub(jwt, channelId, postResult, EventType.SEND_PHRASE_EVENT);
+  console.log('PubSub event posted. Returning response');
 
   res.json(postResult);
 })
 
 router.put('/completed', async (req, res) => {
+  console.log('Endpoint /completed ...');
   const jwt = req.headers.authorization;
   const decodedJWT = verifyAndDecode(jwt);
   let {channel_id: channelId, role } = decodedJWT;
@@ -163,7 +170,7 @@ router.put('/completed', async (req, res) => {
   // Need to verify here that user isMod, we check clientSide but can't trust that
   // If user is not mod or broadcaster, fail the action and don't proceed
   if (!(role === 'broadcaster' || role === 'moderator')) {
-    console.log('Error: User is not the broadcaster or a mod and cannont complete the completePhrase action');
+    console.log('Error: User is not the broadcaster or a mod and cannot complete the completePhrase action');
     res.status(400).json('USER_IS_NOT_MOD');
   }
 
@@ -180,9 +187,12 @@ router.put('/completed', async (req, res) => {
     };
   } else {
     result = await completePhrase(body);
+    console.log('Phrase marked as completed:', result);
   }
 
+  console.log('Posting PubSub event...');
   await postToTwitchExtPubSub(jwt, channelId, result, EventType.COMPLETED_PHRASE_EVENT);
+  console.log('PubSub event posted. Returning response');
 
   res.json(result);
 })
@@ -249,12 +259,13 @@ const getPhrasesByChannel = async (channelId) => {
   };
 
   try {
+    console.log('Awaiting dynamodb.query w/ params:', params);
     const data = await dynamodb.query(params).promise();
     // console.log('data returned', data);
     return data.Items;
   }
   catch (err) {
-    console.log(err);
+    console.log(`Error querying dynamodb: ${err}`);
   }
 }
 
@@ -285,13 +296,12 @@ const postPhrase = async (phraseBody) => {
   };
 
   try {
-    console.log('4 writing data to dynamodb')
+    console.log('Awaiting dynamodb.put w/ params:', params);
     const data = await dynamodb.put(params).promise();
-    console.log(' the response is', data); // seems like on success doesnt actually return anything?, does throw err if err tho
     return postedPhrase;
   }
   catch (err) {
-    console.log(err);
+    console.log(`Error putting data to dynamodb: ${err}`);
     return err;
   }
 }
@@ -318,12 +328,13 @@ const completePhrase = async (args) => {
 
   try {
     // Returns all attributes of the updated item
+    console.log('Awaiting dynamodb.update w/ params:', params);
     const data = await dynamodb.update(params).promise();
 
     return data.Attributes;
   }
   catch (err) {
-    console.log(err);
+    console.log(`Error updating data to dynamodb: ${err}`);
     return err;
   }
 }
@@ -345,7 +356,7 @@ const getAppAccessToken = async () => {
     return data.access_token;
   } catch (err) {
     // TODO: handle err, if this fails we dont want to allow subsequent actions to continue as we need this to get user display name
-    console.log('err getting accestoken err', err);
+    console.log(`Error getting app accessToken: ${err}`);
   }
 }
 
@@ -368,7 +379,7 @@ const getUserById = async (userId) => {
     return displayName;
   }
   catch(err) {
-    console.log('error getting username:', err); // TODO handle errors
+    console.log(`Error getting userById: ${err}`); // TODO handle errors
   }
 }
 
@@ -386,7 +397,7 @@ const verifyAndDecode = (authHeader) => {
   try {
     return jsonwebtoken.verify(token, secret, { algorithms: ['HS256']});
   } catch (err) {
-    return console.log('Invalid JWT. Error: ', err); // TODO error handling
+    return console.log('Error verifying token. Invalid JWT. Error: ', err); // TODO error handling
   }
 }
 
