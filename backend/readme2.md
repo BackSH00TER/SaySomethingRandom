@@ -1,7 +1,8 @@
 ## TIPS
 
-Changing cloudformation.yaml to template.yaml so that sam local start-api can run it
-- might have to reconfigure some of the scripts that are expecting a cloudformation.yaml file, or reconfigure the sam start-api to look for cloudformationl.yaml instead
+SAM script is looking for the template file to be `template.yaml` the other scripts are looking for `cloudformation.yaml`, for now I'm duplicating this file. They are the same, if one is updated the other will need to be updated. 
+- Eventually should try to consolidate and update the relevants scripts to point to the file.
+
 
 To run backend locally:
 - start docker
