@@ -58,6 +58,14 @@ export default class App extends React.Component {
             return { finishedLoading: true, currentChannelId: auth.channelId }
           })
         }
+        
+        // We should only call fetchPhrases after onAuthorized is called, so that we can get channelId from auth
+        // onAuthorized can and will be called periodically, and is also called when onTransactionComplete is called
+        // because of this we want to only call fetchPhrases if we don't already have phrases loaded
+        // the PubSub events are responsible for keeping the list up to date
+        if (!this.state.phrases.length) {
+          this.fetchPhrases();
+        }
       })
 
       // TODO: This might help a bit https://dev.twitch.tv/docs/tutorials/extension-101-tutorial-series/file-structure
@@ -115,8 +123,6 @@ export default class App extends React.Component {
           allowModControl: config.allowModControl === "true" // config.allowModControl is a string, converting to boolean
         })
       })
-
-      this.fetchPhrases()
     }
   }
 

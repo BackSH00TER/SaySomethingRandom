@@ -1,7 +1,12 @@
+import { IS_DEV_MODE } from '../util/constants';
 
-const ROOT_API_URL = "http://127.0.0.1:3000/"; //"https://rplbgv9ts3.execute-api.us-east-1.amazonaws.com/prod/";
 export const FAILED_TO_FETCH = "FAILED_TO_FETCH";
 export const FAILED_TO_SEND = "FAILED_TO_SEND";
+
+// When running locally need to have localhost url vs prod api url
+const ROOT_API_URL = IS_DEV_MODE
+  ? "http://127.0.0.1:3000/"
+  : "https://rplbgv9ts3.execute-api.us-east-1.amazonaws.com/prod/";
 
 /**
  * Fetch an array of phrases for the specified channelid
