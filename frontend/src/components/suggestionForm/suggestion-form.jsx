@@ -13,6 +13,7 @@ import './suggestion-form.css';
 export const SuggestionForm = ({authToken, productSku}) => {
   const [isSuggestionSending, setSuggestionSending] = useState(false);
   const [isSuccessfulSend, setSuccessfulSend] = useState(false);
+  const [isTransactionPending, setTransactionPending] = useState(false);
   const [validationMessage, setValidationMessage] = useState({isValid: true, message: ''});
   const suggestionRef = useRef(null);
   const twitch = window.Twitch ? window.Twitch.ext : null;
@@ -45,7 +46,7 @@ export const SuggestionForm = ({authToken, productSku}) => {
     
       twitch.bits.onTransactionCancelled((transaction) => {
         console.log('onTransactiononTransactionCancelled()) called, received transaction:', transaction);
-        // TODO: if user cancels, need to stop the spinner, and reset
+        resetState();
       });
     }
   };
@@ -59,12 +60,13 @@ export const SuggestionForm = ({authToken, productSku}) => {
       return;
     }
 
-    setSuggestionSending(true);
-
+    setTransactionPending(true);
     await startTransaction(suggestedPhrase);
   };
 
   const submitPhrase = async (suggestedPhrase, transaction) => {
+    setSuggestionSending(true);
+
     const {data, error} = await sendPhrase(suggestedPhrase, transaction, authToken);
 
     if (!!data) { // Success - Reset sending state and mark as success
@@ -80,6 +82,7 @@ export const SuggestionForm = ({authToken, productSku}) => {
   const resetState = () => {
     setSuggestionSending(false);
     setSuccessfulSend(false);
+    setTransactionPending(false);
   };
 
   const onChangeForm = () => {
@@ -147,6 +150,7 @@ export const SuggestionForm = ({authToken, productSku}) => {
           required
           isInvalid={!validationMessage.isValid}
           onChange={() => onChangeForm()}
+          disabled={isTransactionPending}
         />
         <Form.Control.Feedback type={validationMessage.isValid ? 'valid' : 'invalid'}>{validationMessage.message}</Form.Control.Feedback>
         <Form.Text id="suggestionFormHelpBlock" muted>
