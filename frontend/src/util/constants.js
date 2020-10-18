@@ -1,1 +1,1 @@
-export const IS_DEV_MODE = true; // Set to true when running locally to prevent calling real services
+export const IS_DEV_MODE = false; // Set to true when running locally to prevent calling real services
