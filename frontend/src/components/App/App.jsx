@@ -58,11 +58,6 @@ export default class App extends React.Component {
             return { finishedLoading: true, currentChannelId: auth.channelId }
           })
         }
-
-        // I think this needs to go here
-        // THis needs to be called after we are authorized so we can pass the auth token,
-        // actually we want to renderer phrases even if they aren't authorized..
-        this.fetchPhrases()
       })
 
       // TODO: This might help a bit https://dev.twitch.tv/docs/tutorials/extension-101-tutorial-series/file-structure
@@ -120,6 +115,8 @@ export default class App extends React.Component {
           allowModControl: config.allowModControl === "true" // config.allowModControl is a string, converting to boolean
         })
       })
+
+      this.fetchPhrases()
     }
   }
 

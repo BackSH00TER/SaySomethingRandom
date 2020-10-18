@@ -142,10 +142,12 @@
       },
       "config": {
         "viewerUrl": "https://localhost:8080/config.html",
-        "canLinkExternalContent": false
+        "canLinkExternalContent": true
       }
     },
-    "whitelistedConfigUrls": [],
+    "whitelistedConfigUrls": [
+      ""
+    ],
     "whitelistedPanelUrls": [
       "twitch.tv"
     ]
