@@ -35,3 +35,11 @@
 .placeholder {
   padding-top: 50px;
 }
+
+.twitch-link {
+  color: #03a9f4;
+}
+
+.twitch-link:hover {
+  color: #0288D1;
+}

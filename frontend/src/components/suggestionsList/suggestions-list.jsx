@@ -77,7 +77,15 @@ export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod, al
 
 const suggestedByUser = (item) => (
   <div className='user-displayName' title={`Suggested by: ${item.displayName}`}>
-    Suggested by: {item.displayName}
+    Suggested by: &nbsp;
+    <a
+      className='twitch-link'
+      href={`https://www.twitch.tv/${item.displayName}`}
+      target='_blank'
+      rel='noreferrer noopener'
+    >
+      {item.displayName}
+    </a>
   </div>
 );
 
