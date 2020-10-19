@@ -26,7 +26,8 @@ export default class App extends React.Component {
       phrases: [],
       currentChannelId: '',
       productSku: '',
-      allowModControl: true
+      allowModControl: true,
+      isInitialFetchCompleted: false
     }
   }
 
@@ -63,7 +64,7 @@ export default class App extends React.Component {
         // onAuthorized can and will be called periodically, and is also called when onTransactionComplete is called
         // because of this we want to only call fetchPhrases if we don't already have phrases loaded
         // the PubSub events are responsible for keeping the list up to date
-        if (!this.state.phrases.length) {
+        if (!this.state.isInitialFetchCompleted) {
           this.fetchPhrases();
         }
       })
@@ -142,10 +143,11 @@ export default class App extends React.Component {
     if (!!data) {
       const filteredPhrases = this.getNonCompletedPhrases(data);
 
-      this.setState({ phrases: filteredPhrases});
-      this.setState({ isLoadingPhrases: false})
+      this.setState({ phrases: filteredPhrases });
+      this.setState({ isLoadingPhrases: false });
+      this.setState({ isInitialFetchCompleted: true });
     } else {
-      this.setState({ isLoadingPhrases: false})
+      this.setState({ isLoadingPhrases: false });
       // TODO: setState is error true, render error fetching msg
     }
   }
