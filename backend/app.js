@@ -13,7 +13,7 @@ const jsonwebtoken = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
 const https = require('https');
 const fetch = require('node-fetch');
-const { ExtensionClientId, ExtensionSecret, TwitchAPIClientSecret } = require('./secrets');
+const { ExtensionClientId, ExtensionSecret, TwitchAPIClientSecret, OwnerId } = require('./secrets');
 
 const dynamodb = new AWS.DynamoDB.DocumentClient({region: 'us-east-1'})
 const tableName = 'SaySomethingRandom_Phrases';
@@ -155,7 +155,7 @@ router.post('/phrase', async (req, res) => {
   }
 
   console.log('Posting PubSub event...');
-  await postToTwitchExtPubSub(jwt, channelId, postResult, EventType.SEND_PHRASE_EVENT);
+  await postToTwitchExtPubSub(channelId, postResult, EventType.SEND_PHRASE_EVENT);
   console.log('PubSub event posted. Returning response');
 
   res.json(postResult);
@@ -191,7 +191,7 @@ router.put('/completed', async (req, res) => {
   }
 
   console.log('Posting PubSub event...');
-  await postToTwitchExtPubSub(jwt, channelId, result, EventType.COMPLETED_PHRASE_EVENT);
+  await postToTwitchExtPubSub(channelId, result, EventType.COMPLETED_PHRASE_EVENT);
   console.log('PubSub event posted. Returning response');
 
   res.json(result);
@@ -202,17 +202,16 @@ router.put('/completed', async (req, res) => {
  * Posts an updated event to the Twitch Extension PubSub (note: this is different than Twitch PubSub)
  * Broadcasts the message to the specified channelId, frontend should have a twitch.listen() to listen for the event.
  * Doc: https://dev.twitch.tv/docs/extensions/reference/#send-extension-pubsub-message
- * @param jwtToken - JWT auth token already containing Bearer + token
  * @param channelId -  channelId to update w/ message update event
  * @param messagePayload - object containing the message attributes
  * @param eventType - represents the type of event that is being sent
  */
-const postToTwitchExtPubSub = async (jwtToken, channelId, messagePayload, eventType) => {
-  // TODO: Explore sending the new message in the pubsub event body, thus can add to the list w/o having to do a full fetch
-  //      This would be crucial in saving unnecessary database reads if we have access to this already
+const postToTwitchExtPubSub = async (channelId, messagePayload, eventType) => {
+  console.log(`Posting to PubSub for channelId: ${channelId}, eventType: ${eventType}`);
   const pubSubPostUrl = `https://api.twitch.tv/extensions/message/${channelId}`;
-  // TODO check pubsub_perms field on the jwt to ensure has the right perms?
-  
+
+  // Create a JWT for the server to use to post to pubsub (expires in 60 seconds)
+  const serverAccessToken = makeServerToken(channelId);
   /**
    * Required body params for PubSub Post event:
    *    content_type  | string    | application/json
@@ -236,15 +235,18 @@ const postToTwitchExtPubSub = async (jwtToken, channelId, messagePayload, eventT
     headers: {
       'Content-Type': 'application/json',
       'Client-ID': ExtensionClientId,
-      Authorization: jwtToken
+      Authorization: `Bearer ${serverAccessToken}`
     }
   };
 
   // Returns status 204 on success
+  console.log('Trying to post PubSub event...');
   const result = await fetch(pubSubPostUrl, options);
+  console.log('PubSub event result:', result);
   
   if (result.status !== 204) {
-    console.log('ERROR posting to Twitch Pub Sub');
+    const parsed = await result.json();
+    console.log('ERROR posting to Twitch Pub Sub', parsed);
     // TODO: Error handling
   }
   return result;
@@ -361,6 +363,7 @@ const getAppAccessToken = async () => {
 }
 
 const getUserById = async (userId) => {
+  console.log(`Attempting to get user name from userId: ${userId}`)
   const url = `https://api.twitch.tv/helix/users?id=${userId}`;
   const appAccessToken = await getAppAccessToken();
 
@@ -372,8 +375,11 @@ const getUserById = async (userId) => {
   };
 
   try {
+    console.log('Awaiting response...');
     const response = await fetch(url, options);
+    console.log('Response for userId is:', response);
     const responseData = await response.json();
+    console.log('ResponseData json parsed:', responseData);
     const displayName = responseData.data[0].display_name;
 
     return displayName;
@@ -399,6 +405,20 @@ const verifyAndDecode = (authHeader) => {
   } catch (err) {
     return console.log('Error verifying token. Invalid JWT. Error: ', err); // TODO error handling
   }
+}
+
+const makeServerToken = (channelId) => {
+  const serverTokenDurationSec = 60; // token for pubsub expires after 60 seconds
+  const payload = {
+    exp: Math.floor(Date.now() / 1000) + serverTokenDurationSec,
+    channel_id: channelId,
+    user_id: OwnerId, // extension owner ID for the call to Twitch PubSub
+    role: 'external',
+    pubsub_perms: {
+      send: ['*'],
+    },
+  };
+  return jsonwebtoken.sign(payload, secret, { algorithm: 'HS256' });
 }
 
 
