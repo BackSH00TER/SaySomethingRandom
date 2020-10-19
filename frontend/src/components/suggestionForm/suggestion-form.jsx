@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
-import { CheckCircleFill } from 'react-bootstrap-icons';
+import { CheckCircleFill, ExclamationTriangle } from 'react-bootstrap-icons';
 
 import { sendPhrase, FAILED_TO_SEND } from '../../dataclient/dataclient';
 import { IS_DEV_MODE } from '../../util/constants';
@@ -19,6 +19,7 @@ export const SuggestionForm = ({authToken, productSku}) => {
   const twitch = window.Twitch ? window.Twitch.ext : null;
   
   const selectedProductSku = productSku || "submit_suggestion_100";
+  const isBitsEnabled = !!(twitch?.features.isBitsEnabled);
 
   // ----- ACTIONS ------
   // Begins the bits transaction flow
@@ -35,8 +36,6 @@ export const SuggestionForm = ({authToken, productSku}) => {
        */
       IS_DEV_MODE && twitch.bits.setUseLoopback(true);
       twitch.bits.useBits(selectedProductSku);
-
-      // TODO: Add a check for twitch.features.isBitsEnabled - note currently it always returns false
 
       twitch.bits.onTransactionComplete((transaction) => {
         console.log('onTransactionComplete() called, received transaction:', transaction);
@@ -100,11 +99,10 @@ export const SuggestionForm = ({authToken, productSku}) => {
     }
   }
 
-  // Client side validation of content meets requirements
+  // Client side validation of content meets requirements:
   // - No empty phrase
   // - 300 characters max
   // - no TOS breakage (Future)
-  // TODO: need to have an onChange w/ debounce that fires to update to valid once valid
   const isContentValid = (suggestedPhrase) => {
     if (!suggestedPhrase) {
       setValidationMessage({
@@ -149,7 +147,7 @@ export const SuggestionForm = ({authToken, productSku}) => {
           required
           isInvalid={!validationMessage.isValid}
           onChange={() => onChangeForm()}
-          disabled={isTransactionPending}
+          disabled={isTransactionPending || !isBitsEnabled}
         />
         <Form.Control.Feedback type={validationMessage.isValid ? 'valid' : 'invalid'}>{validationMessage.message}</Form.Control.Feedback>
         <Form.Text id="suggestionFormHelpBlock" muted>
@@ -171,6 +169,7 @@ export const SuggestionForm = ({authToken, productSku}) => {
       className='send-button text-center'
       block
       onClick={() => onClickSend()}
+      disabled={!isBitsEnabled}
     >
       Send suggestion
     </Button>
@@ -195,6 +194,18 @@ export const SuggestionForm = ({authToken, productSku}) => {
     </Button>
   );
 
+  const bitsDisabledMessage = !isBitsEnabled && (
+    <div className='bits-disabled-message'>
+      <h4 className='text-center'>
+        <ExclamationTriangle className='warning-icon-left' color={'#ffcc00'} size={'20'}/>
+        Bits disabled
+        <ExclamationTriangle className='warning-icon-right' color={'#ffcc00'} size={'20'}/>
+      </h4>
+      This feature requires bits to be enabled. This broadcaster may not be affiliated / partnered with Twitch, thus bits are disabled. 
+      Show them your support so this feature can be enabled.
+    </div>
+  );
+
   return (
     <React.Fragment>
       <div className='header-region'>
@@ -205,6 +216,7 @@ export const SuggestionForm = ({authToken, productSku}) => {
         {sendingSpinner}
         {successMessage}
         {postAnotherButton}
+        {bitsDisabledMessage}
       </div>
       <div className='footer-region'>
         {sendSuggestionButton}

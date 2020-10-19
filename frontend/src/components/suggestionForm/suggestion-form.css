@@ -70,3 +70,17 @@
   max-height: 300px;
   min-height: 50px;
 }
+
+.bits-disabled-message {
+  padding: 0 8px;
+}
+
+.warning-icon-left {
+  margin-right: 8px;
+  margin-bottom: 4px;
+}
+
+.warning-icon-right {
+  margin-left: 8px;
+  margin-bottom: 4px;
+}

@@ -96,6 +96,28 @@
       "orientation": "Portrait",
       "type": "config",
       "viewerType": "Broadcaster"
+    },
+    {
+      "channelId": "32799121",
+      "configurationAnchor": "panel",
+      "displayChannelName": "backsh00ter",
+      "features": {
+        "isBitsEnabled": true,
+        "isChatEnabled": false,
+        "isSubscriptionStatusAvailable": false
+      },
+      "frameSize": {
+        "width": 1280,
+        "height": 720
+      },
+      "id": "4",
+      "isPopout": false,
+      "label": "Logged Out",
+      "linked": false,
+      "linkedUserId": "",
+      "orientation": "Portrait",
+      "type": "panel",
+      "viewerType": "Logged-Out Viewer"
     }
   ],
   "frontendCommand": "npm run host",
