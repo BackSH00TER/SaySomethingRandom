@@ -1,6 +1,7 @@
 .dark-list-item {
   background-color: #242424 !important;
   border-color: #dcdcdc !important;
+  overflow-wrap: break-word;
 }
 
 .user-displayName {

@@ -19,7 +19,6 @@ export const SuggestionForm = ({authToken, productSku}) => {
   const twitch = window.Twitch ? window.Twitch.ext : null;
   
   const selectedProductSku = productSku || "submit_suggestion_100";
-  console.log('productSku', productSku, 'selectedproductsku', selectedProductSku);
 
   // ----- ACTIONS ------
   // Begins the bits transaction flow
