@@ -1,11 +1,24 @@
-.dark-list-item {
-  background-color: #242424 !important;
-  border-color: #dcdcdc !important;
+.dark-list-item1 {
+  background-color: #1a1a1a !important;
   overflow-wrap: break-word;
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+  font-weight: 400;
+}
+
+.dark-list-item2 {
+  background-color: #262626 !important;
+  overflow-wrap: break-word;
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+  font-weight: 400;
 }
 
 .user-displayName {
-  font-size: 12px;
+  color: #b3b3b3;
+  padding-top: 8px;
+  font-size: 11px;
+  font-weight: 300;
   max-width: 300px;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -34,12 +47,15 @@
 
 .placeholder {
   padding-top: 50px;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 .twitch-link {
-  color: #03a9f4;
+  color: #b3b3b3;
+  font-weight: 700;
 }
 
 .twitch-link:hover {
-  color: #0288D1;
+  color: #aaaaaa;
 }

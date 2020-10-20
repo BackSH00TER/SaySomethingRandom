@@ -5,7 +5,7 @@
 
 .form-region {
   height: 372px;
-  padding-top: 8px;
+  padding: 8px 8px 0 8px;
 }
 
 .footer-region {
@@ -20,9 +20,9 @@
   width: 5em !important;
   height: 5em !important;
   /* Hacky way to center spinner 
-  (320width panel - 80width spinner) / 2
+  (320width panel - 80width spinner - 16padding) / 2
   */
-  margin-left: 120px;
+  margin-left: 112px;
 }
 
 .success-message {
@@ -48,9 +48,9 @@
 
 .post-another-button {
   /* Hacky way to center button 
-  (320width panel - 118.5width button) / 2
+  (320width panel - 118.5width button - 16padding) / 2
   */
-  margin-left: 100.75px;
+  margin-left: 92.75px;
   background-color: #03a9f4 !important;
 }
 
@@ -71,8 +71,10 @@
   min-height: 50px;
 }
 
-.bits-disabled-message {
-  padding: 0 8px;
+.textarea-disabled {
+  max-height: 300px;
+  min-height: 50px;
+  background-color: #e0e0e0 !important;
 }
 
 .warning-icon-left {
@@ -83,4 +85,13 @@
 .warning-icon-right {
   margin-left: 8px;
   margin-bottom: 4px;
+}
+
+.bits-disabled-message {
+  padding: 0 8px;
+  font-weight: 300;
+}
+
+.form-help-block {
+  color: #b3b3b3 !important;
 }

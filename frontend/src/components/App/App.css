@@ -1,10 +1,10 @@
 .App {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
 }
 
 .dark-theme {
-  background-color: #242424;
-  color:#e5e3e8;
+  background-color: #1a1a1a;
+  color: #fff;
   height: 500px;
 }
 
@@ -16,7 +16,7 @@
   width: 5em !important;
   height: 5em !important;
   /* Hacky way to center spinner 
-  (320width panel - 80width spinner) / 2
+  (320width panel - 80width spinner - 16padding) / 2
   */
-  margin-left: 120px;
+  margin-left: 112px;
 }

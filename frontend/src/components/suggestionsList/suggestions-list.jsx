@@ -29,6 +29,7 @@ export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod, al
       variant='link'
       className='button-action'
       onClick={() => markCompleted(phrase, authToken)}
+      title='Complete'
     >
       <CheckSquareFill className='button-action-accept' color={'#43A047'} size={20} />
     </Button>
@@ -39,6 +40,7 @@ export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod, al
       variant='link'
       className='button-action'
       onClick={() => {console.log('accept clicked')}}
+      title='Reject'
     >
       <XSquareFill className='button-action-reject' color={'#E53935'} size={20} />
     </Button>
@@ -50,13 +52,17 @@ export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod, al
       <CardList color={'#03a9f4'} size={90} />
       
       <p>Be the first to add a suggestion!</p>
+      <p>Play along with the broadcaster, put them on the spot with your suggested phrase / action.</p>
     </div>
   );
 
   const listGroupItems = !!suggestions.length && (
     <ListGroup variant='flush'>
-      {suggestions.map(item =>
-        <ListGroup.Item className='dark-list-item' key={item.uuid}>
+      {suggestions.map((item, index) =>
+        <ListGroup.Item
+          className={index % 2 === 0 ? 'dark-list-item1' : 'dark-list-item2'}
+          key={item.uuid}
+        >
          <div>{item.phrase}</div>
           <div className='msg-action-buttons'>
             {acceptButton(item)} {rejectButton}
@@ -76,16 +82,18 @@ export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod, al
 }
 
 const suggestedByUser = (item) => (
-  <div className='user-displayName' title={`Suggested by: ${item.displayName}`}>
-    Suggested by: &nbsp;
-    <a
-      className='twitch-link'
-      href={`https://www.twitch.tv/${item.displayName}`}
-      target='_blank'
-      rel='noreferrer noopener'
-    >
-      {item.displayName}
-    </a>
+  <div className='user-displayName' title={`www.twitch.tv/${item.displayName}`}>
+    Suggested by:&nbsp;
+    <strong>
+      <a
+        className='twitch-link'
+        href={`https://www.twitch.tv/${item.displayName}`}
+        target='_blank'
+        rel='noreferrer noopener'
+      >
+        {item.displayName}
+      </a>
+    </strong>
   </div>
 );
 

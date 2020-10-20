@@ -36,7 +36,7 @@ const TopNav = () => {
     <Nav justify variant="pills" onSelect={(item) => onSelectItem(item)} className="tab-header">
       <Nav.Item>
         <Nav.Link
-          className={selected === "first" ? "selected-nav-item selected-left" : "nav-item-plain"}
+          className={selected === "first" ? "selected-nav-item" : "nav-item-plain"}
           eventKey="first"
           onClick={() => setSelected("first")}
         >
@@ -45,7 +45,7 @@ const TopNav = () => {
       </Nav.Item>
       <Nav.Item>
         <Nav.Link
-          className={selected === "second" ? "selected-nav-item selected-right" : "nav-item-plain"}
+          className={selected === "second" ? "selected-nav-item" : "nav-item-plain"}
           eventKey="second"
           onClick={() => setSelected("second")}
         >

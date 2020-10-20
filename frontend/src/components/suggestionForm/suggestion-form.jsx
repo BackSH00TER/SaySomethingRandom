@@ -130,14 +130,16 @@ export const SuggestionForm = ({authToken, productSku}) => {
   // ----- COMPONENTS ------
 
   const header = (
-    <h3 className='text-center'>Say Something Random</h3>
+    <h3 className='text-center'>On The Spot</h3>
   );
+
+  const isDisabled = isTransactionPending || !isBitsEnabled;
 
   const suggestionForm = !isSuggestionSending && !isSuccessfulSend && (
     <Form>
       <Form.Group controlId="suggestionForm" className='form-group-container'>
         <Form.Control
-          className='textarea-styles'
+          className={isDisabled ? 'textarea-disabled' :'textarea-styles'}
           as="textarea"
           rows="5"
           placeholder="Enter your suggestion"
@@ -147,10 +149,10 @@ export const SuggestionForm = ({authToken, productSku}) => {
           required
           isInvalid={!validationMessage.isValid}
           onChange={() => onChangeForm()}
-          disabled={isTransactionPending || !isBitsEnabled}
+          disabled={isDisabled}
         />
         <Form.Control.Feedback type={validationMessage.isValid ? 'valid' : 'invalid'}>{validationMessage.message}</Form.Control.Feedback>
-        <Form.Text id="suggestionFormHelpBlock" muted>
+        <Form.Text id="suggestionFormHelpBlock" className='form-help-block'>
           Your suggestion must be less than 300 characters and follow Twitch TOS. All transactions are final.
         </Form.Text>
       </Form.Group>
