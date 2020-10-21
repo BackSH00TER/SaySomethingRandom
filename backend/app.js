@@ -121,9 +121,16 @@ router.post('/phrase', async (req, res) => {
     verifyAndDecode(req.body.transactionReceipt);
   }
 
-
   const jwt = req.headers.authorization;
   const decodedJWT = verifyAndDecode(jwt);
+
+  // If user is not logged in, then do nothing
+  const isLoggedIn = decodedJWT.opaque_user_id[0] === 'U' ? true : false;
+  if (!isLoggedIn) {
+    res.json(null);
+    return;
+  }
+
   const {channel_id: channelId, user_id: userId } = decodedJWT;
   const displayName = await getUserById(userId);
   const body = {
