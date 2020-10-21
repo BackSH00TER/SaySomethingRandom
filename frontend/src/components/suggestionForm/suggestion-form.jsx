@@ -10,7 +10,7 @@ import { IS_DEV_MODE } from '../../util/constants';
 
 import './suggestion-form.css';
 
-export const SuggestionForm = ({authToken, productSku}) => {
+export const SuggestionForm = ({authToken, productSku, isViewerLoggedIn}) => {
   const [isSuggestionSending, setSuggestionSending] = useState(false);
   const [isSuccessfulSend, setSuccessfulSend] = useState(false);
   const [isTransactionPending, setTransactionPending] = useState(false);
@@ -133,7 +133,7 @@ export const SuggestionForm = ({authToken, productSku}) => {
     <h3 className='text-center'>On The Spot</h3>
   );
 
-  const isDisabled = isTransactionPending || !isBitsEnabled;
+  const isDisabled = isTransactionPending || !isBitsEnabled || !isViewerLoggedIn;
 
   const suggestionForm = !isSuggestionSending && !isSuccessfulSend && (
     <Form>
@@ -171,7 +171,7 @@ export const SuggestionForm = ({authToken, productSku}) => {
       className='send-button text-center'
       block
       onClick={() => onClickSend()}
-      disabled={!isBitsEnabled}
+      disabled={isDisabled}
     >
       Send suggestion
     </Button>
@@ -208,6 +208,17 @@ export const SuggestionForm = ({authToken, productSku}) => {
     </div>
   );
 
+  const mustLoginMessage = !isViewerLoggedIn && (
+    <div className='bits-disabled-message'>
+      <h4 className='text-center'>
+        <ExclamationTriangle className='warning-icon-left' color={'#ffcc00'} size={'20'}/>
+        Logged out
+        <ExclamationTriangle className='warning-icon-right' color={'#ffcc00'} size={'20'}/>
+      </h4>
+      You must sign in first before you can submit your own suggestion.
+    </div>
+  );
+
   return (
     <React.Fragment>
       <div className='header-region'>
@@ -218,7 +229,7 @@ export const SuggestionForm = ({authToken, productSku}) => {
         {sendingSpinner}
         {successMessage}
         {postAnotherButton}
-        {bitsDisabledMessage}
+        {bitsDisabledMessage || mustLoginMessage}
       </div>
       <div className='footer-region'>
         {sendSuggestionButton}

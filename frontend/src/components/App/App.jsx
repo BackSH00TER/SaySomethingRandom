@@ -196,6 +196,7 @@ export default class App extends React.Component {
         authToken={this.Authentication.getToken()}
         isMod={this.Authentication.isModerator()}
         isBroadcaster={this.Authentication.isBroadcaster()}
+        isViewerLoggedIn={this.Authentication.isLoggedIn()}
         allowModControl={this.state.allowModControl}
         productSku={this.state.productSku}
       />

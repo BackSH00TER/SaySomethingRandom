@@ -11,6 +11,7 @@ export default class Authentication{
             token,
             opaque_id,
             user_id:false,
+            isLoggedIn:false,
             isMod:false,
             isBroadcaster:false,
             role:""
@@ -18,7 +19,7 @@ export default class Authentication{
     }
 
     isLoggedIn(){
-        return this.state.opaque_id[0]==='U'? true : false
+        return this.state.isLoggedIn
     }
 
     // This does not guarantee the user is a moderator- this is fairly simple to bypass - so pass the JWT and verify
@@ -54,12 +55,12 @@ export default class Authentication{
     setToken(token,opaque_id){
         let isMod = false
         let isBroadcaster = false
+        let isLoggedIn = false
         let role = ""
         let user_id = ""
 
         try {
             let decoded = jwt.decode(token)
-            
             
             if(decoded.role === 'moderator') {
               isMod = true
@@ -72,6 +73,7 @@ export default class Authentication{
 
             user_id = decoded.user_id
             role = decoded.role
+            isLoggedIn = decoded.opaque_user_id[0]==='U'? true : false
         } catch (e) {
             token=''
             opaque_id=''
@@ -82,6 +84,7 @@ export default class Authentication{
             opaque_id,
             isMod,
             isBroadcaster,
+            isLoggedIn,
             user_id,
             role
         }
