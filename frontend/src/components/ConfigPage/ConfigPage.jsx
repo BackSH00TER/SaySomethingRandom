@@ -115,6 +115,8 @@ const ConfigSettingsComponent = ({twitch, configSettings, products}) => {
   const bitsPriceRef = useRef(null);
   const allowModControlRef = useRef(null);
   const {bitsPriceSku, allowModControl} = configSettings;
+  // Put products in ascending order (lowest bits price first)
+  products.sort((a,b) => a.cost.amount - b.cost.amount);
 
   const saveConfig = () => {
     const bitsPriceSetting = bitsPriceRef.current?.value;
