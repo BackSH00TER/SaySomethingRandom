@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
-import { CheckCircleFill, ExclamationTriangle } from 'react-bootstrap-icons';
+import { CheckCircleFill, ExclamationTriangle, EmojiFrown } from 'react-bootstrap-icons';
 
 import { sendPhrase, FAILED_TO_SEND } from '../../dataclient/dataclient';
 import { IS_DEV_MODE } from '../../util/constants';
@@ -14,6 +14,7 @@ export const SuggestionForm = ({authToken, productSku, isViewerLoggedIn}) => {
   const [isSuggestionSending, setSuggestionSending] = useState(false);
   const [isSuccessfulSend, setSuccessfulSend] = useState(false);
   const [isTransactionPending, setTransactionPending] = useState(false);
+  const [isErrorSending, setErrorSending] = useState(false);
   const [validationMessage, setValidationMessage] = useState({isValid: true, message: ''});
   const suggestionRef = useRef(null);
   const twitch = window.Twitch ? window.Twitch.ext : null;
@@ -72,7 +73,9 @@ export const SuggestionForm = ({authToken, productSku, isViewerLoggedIn}) => {
       setSuccessfulSend(true);
       // suggestionRef.current.value = null; // resets text
     } else { // Error
-      console.log('Failed to sendPhrase');
+      console.log('Failed to sendPhrase, showing error');
+      setSuggestionSending(false)
+      setErrorSending(true);
       // TODO: Show error
     }
   };
@@ -135,7 +138,7 @@ export const SuggestionForm = ({authToken, productSku, isViewerLoggedIn}) => {
 
   const isDisabled = isTransactionPending || !isBitsEnabled || !isViewerLoggedIn;
 
-  const suggestionForm = !isSuggestionSending && !isSuccessfulSend && (
+  const suggestionForm = !isSuggestionSending && !isSuccessfulSend && !isErrorSending && (
     <Form>
       <Form.Group controlId="suggestionForm" className='form-group-container'>
         <Form.Control
@@ -160,9 +163,16 @@ export const SuggestionForm = ({authToken, productSku, isViewerLoggedIn}) => {
   );
 
   const successMessage = isSuccessfulSend && (
-    <div className='text-center success-message'>
+    <div className='text-center info-message'>
       <CheckCircleFill color={'#43A047'} size={'90px'}></CheckCircleFill>
-      <p className='message-padding'> Suggestion successfully sent!</p>
+      <p className='message-padding'>Suggestion successfully sent!</p>
+    </div>
+  );
+
+  const errorMessage = isErrorSending && (
+    <div className='text-center info-message'>
+      <EmojiFrown color={'#E53935'} size={'90px'}></EmojiFrown>
+      <p className='message-padding'>There was an error sending the message. If this error continues please contact the Extension developer.</p>
     </div>
   );
 
@@ -227,7 +237,7 @@ export const SuggestionForm = ({authToken, productSku, isViewerLoggedIn}) => {
       <div className='form-region'>
         {suggestionForm}
         {sendingSpinner}
-        {successMessage}
+        {successMessage || errorMessage}
         {postAnotherButton}
         {bitsDisabledMessage || mustLoginMessage}
       </div>

@@ -132,7 +132,15 @@ router.post('/phrase', async (req, res) => {
   }
 
   const {channel_id: channelId, user_id: userId } = decodedJWT;
-  const displayName = await getUserById(userId);
+  let displayName;
+  try {
+    displayName = await getUserById(userId);
+  } catch (err) {
+    // If unable to get users displayName, then do nothing
+    console.log(`Error getting user displayName from userId: ${userId}. Error is: ${err}`);
+    res.json(null);
+    return;
+  }
   const body = {
     phrase: req.body.phrase,
     channelId,
@@ -393,6 +401,7 @@ const getUserById = async (userId) => {
   }
   catch(err) {
     console.log(`Error getting userById: ${err}`); // TODO handle errors
+    throw err;
   }
 }
 
