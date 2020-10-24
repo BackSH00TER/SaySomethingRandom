@@ -71,25 +71,25 @@ router.get('/phrases', async (req, res) => {
     phrases = [
       {
         completed: false,
-        phrase: 'You should say somethign really funny cuz I am a funny viewer hahaha',
+        phrase: 'My grandma once told me that I should always...',
         uuid: 'b7ce3137-3ba2-4f83-91ec-b6cf719e5345',
         channelId: '123455',
         userId: '6546546',
-        displayName: 'loser1459',
+        displayName: 'User1234',
         dateCreated: 1603499959
       },
       {
         completed: false,
-        phrase: 'Test POST2',
+        phrase: 'Prank phone call someone',
         uuid: 'f0804227-0bab-464b-8ac8-2b7b6b47fe6f',
         channelId: '123455',
         userId: '6546548',
-        displayName: 'randomUserwithLongUserNameThatIsReallyLong',
+        displayName: 'User5678',
         dateCreated: 1603499642
       },
       {
         completed: false,
-        phrase: 'This is a suggestion that is a lot of characters and will wrap multiple lines. This suggestions is so long that it will have to be truncated and ellipsis will be displayed at the end. When you hover over this phrase the full phrase will be displayed in the title.',
+        phrase: 'Hide in the trunk!',
         uuid: 'f0804227-0bab-464b-8ac8-2b7b6b47f8756',
         channelId: '123455',
         userId: '6546548',
