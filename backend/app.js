@@ -478,7 +478,7 @@ const sendToChat = async (channelId, postedPhrase) => {
   console.log('Sending message to channel...');
   const authToken = makeServerToken(channelId);
 
-  const message = `${postedPhrase.displayName} added the suggestion: ${postedPhrase.phrase}.`;
+  const message = `@${postedPhrase.displayName} added the suggestion: "${postedPhrase.phrase}".`;
   const options = {
     method: 'POST',
     body: JSON.stringify({text: message}),
@@ -495,8 +495,12 @@ const sendToChat = async (channelId, postedPhrase) => {
   const result = await fetch(url, options);
   
   if (result.status !== 204) {
+    if(result.status === 429) {
+      // Message rate limit is 12 msgs per minute
+      console.log(`Error: Send to chat failed, rate limit reached for channelId: ${channelId}`);
+    }
     const parsed = await result.json();
-    console.log(`ERROR sennding message to chat for channeldId: ${channelId}. Error: ${JSON.stringify(parsed)}`);
+    console.log(`ERROR sending message to chat for channeldId: ${channelId}. Error: ${JSON.stringify(parsed)}`);
     // TODO: Error handling
     return result;
   }
