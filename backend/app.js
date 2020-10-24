@@ -177,6 +177,8 @@ router.post('/phrase', async (req, res) => {
     // TODO: Come up with and use common response across all endpoints
   }
 
+  await sendToChat(channelId, postResult);
+
   console.log('Posting PubSub event...');
   await postToTwitchExtPubSub(channelId, postResult, EventType.SEND_PHRASE_EVENT);
   console.log('PubSub event posted. Returning response');
@@ -319,7 +321,8 @@ const postPhrase = async (phraseBody) => {
     displayName,
     phrase,
     uuid,
-    completed: false
+    completed: false,
+    dateCreated: date
   };
 
   try {
@@ -465,6 +468,41 @@ const getEpochDateTime = () => {
 const sortPhrasesByOldestDate = (phrases) => {
   phrases.sort((date1, date2) => date1.dateCreated - date2.dateCreated);
   return phrases;
+}
+
+/**
+ * Sends a message to the chat of the specified channelId
+ * @param {string} channelId who's chat the message is sent to
+ */
+const sendToChat = async (channelId, postedPhrase) => {
+  console.log('Sending message to channel...');
+  const authToken = makeServerToken(channelId);
+
+  const message = `${postedPhrase.displayName} added the suggestion: ${postedPhrase.phrase}.`;
+  const options = {
+    method: 'POST',
+    body: JSON.stringify({text: message}),
+    headers: {
+      'Content-Type': 'application/json',
+      'Client-ID': ExtensionClientId,
+      Authorization: `Bearer ${authToken}`
+    }
+  };
+
+  // URL Version will need to change w/ version of app
+  const url = `https://api.twitch.tv/extensions/${ExtensionClientId}/0.0.1/channels/${channelId}/chat`;
+
+  const result = await fetch(url, options);
+  
+  if (result.status !== 204) {
+    const parsed = await result.json();
+    console.log(`ERROR sennding message to chat for channeldId: ${channelId}. Error: ${JSON.stringify(parsed)}`);
+    // TODO: Error handling
+    return result;
+  }
+  console.log('Message sent successfully');
+
+  return result;
 }
 
 // The aws-serverless-express library creates a server and listens on a Unix
