@@ -9,6 +9,7 @@ import {
 } from 'react-bootstrap-icons';
 
 import { markPhraseCompleted } from '../../dataclient/dataclient';
+import OtsWhite from "../../assets/ots-white.png";
 
 import './suggestions-list.css';
 
@@ -53,6 +54,9 @@ export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod, al
       
       <p>Be the first to add a suggestion!</p>
       <p>Play along with the broadcaster, put them on the spot with your suggested phrase / action.</p>
+      <div className="logo-footer">
+        <img src={OtsWhite} width="58px" height="50px" />
+      </div>
     </div>
   );
 

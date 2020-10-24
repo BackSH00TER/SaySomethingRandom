@@ -6,6 +6,7 @@ import Authentication from '../../util/Authentication/Authentication';
 import { fetchPhrases, FAILED_TO_FETCH } from '../../dataclient/dataclient';
 
 import { TabHeader } from '../tabHeader/tab-header';
+import OtsWhite from "../../assets/ots-white.png";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
@@ -178,12 +179,17 @@ export default class App extends React.Component {
     const whichTheme = isLightTheme ? 'App-light' : 'App-dark'; // TODO: rename this variable
     
     const loadingState = this.state.isLoadingPhrases && (
-      <div className='spinner-container'>
-        <Spinner animation="border" className='sending-spinner'>
-          <span className='sr-only'>Loading...</span>
-        </Spinner>
-        <div className='text-center'>Loading...</div>
-      </div>
+      <React.Fragment>
+        <div className="text-center logo-container">
+          <img src={OtsWhite} width="116px" height="100px" />
+        </div>
+        <div className='spinner-container'>
+          <Spinner animation="border" className='sending-spinner'>
+            <span className='sr-only'>Loading...</span>
+          </Spinner>
+          <div className='text-center'>Loading...</div>
+        </div>
+      </React.Fragment>
     );
 
     const shouldRenderList = this.state.finishedLoading && this.state.isVisible && !this.state.isLoadingPhrases;

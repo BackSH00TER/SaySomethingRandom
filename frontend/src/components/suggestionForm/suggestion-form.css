@@ -1,11 +1,6 @@
-.header-region {
-  height: 50px;
-  padding-top: 8px;
-}
-
 .form-region {
-  height: 372px;
-  padding: 8px 8px 0 8px;
+  height: 422px;
+  padding: 16px 8px 0 8px;
 }
 
 .footer-region {
@@ -94,4 +89,8 @@
 
 .form-help-block {
   color: #b3b3b3 !important;
+}
+
+.success-logo-footer {
+  padding-top: 140px;
 }

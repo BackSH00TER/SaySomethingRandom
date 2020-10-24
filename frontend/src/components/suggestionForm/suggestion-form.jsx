@@ -7,6 +7,8 @@ import { CheckCircleFill, ExclamationTriangle, EmojiFrown } from 'react-bootstra
 
 import { sendPhrase, FAILED_TO_SEND } from '../../dataclient/dataclient';
 import { IS_DEV_MODE } from '../../util/constants';
+import OtsIconWhite from "../../assets/ots-icon-white.png";
+import OtsWhite from "../../assets/ots-white.png";
 
 import './suggestion-form.css';
 
@@ -132,10 +134,6 @@ export const SuggestionForm = ({authToken, productSku, isViewerLoggedIn}) => {
 
   // ----- COMPONENTS ------
 
-  const header = (
-    <h3 className='text-center'>On The Spot</h3>
-  );
-
   const isDisabled = isTransactionPending || !isBitsEnabled || !isViewerLoggedIn;
 
   const suggestionForm = !isSuggestionSending && !isSuccessfulSend && !isErrorSending && (
@@ -162,10 +160,30 @@ export const SuggestionForm = ({authToken, productSku, isViewerLoggedIn}) => {
     </Form>
   );
 
-  const successMessage = isSuccessfulSend && (
+  const successMessage = (
     <div className='text-center info-message'>
       <CheckCircleFill color={'#43A047'} size={'90px'}></CheckCircleFill>
       <p className='message-padding'>Suggestion successfully sent!</p>
+    </div>
+  );
+
+  const postAnotherButton = (
+    <Button
+      className='post-another-button'
+      variant="primary"
+      onClick={() => resetState()}
+    >
+      Post Another
+    </Button>
+  );
+
+  const successfulSendScreen = isSuccessfulSend && (
+    <div>
+      {successMessage}
+      {postAnotherButton}
+      <div className='text-center success-logo-footer'>
+        <img src={OtsWhite} width="58px" height="50px" />
+      </div>
     </div>
   );
 
@@ -183,7 +201,7 @@ export const SuggestionForm = ({authToken, productSku, isViewerLoggedIn}) => {
       onClick={() => onClickSend()}
       disabled={isDisabled}
     >
-      Send suggestion
+      <img src={OtsIconWhite} width="15px" height="15px" /> Send suggestion
     </Button>
   );
 
@@ -194,16 +212,6 @@ export const SuggestionForm = ({authToken, productSku, isViewerLoggedIn}) => {
       </Spinner>
       <div className='text-center'>Saving ...</div>
     </div>
-  );
-
-  const postAnotherButton = isSuccessfulSend && (
-    <Button
-      className='post-another-button'
-      variant="primary"
-      onClick={() => resetState()}
-    >
-      Post Another
-    </Button>
   );
 
   const bitsDisabledMessage = !isBitsEnabled && (
@@ -231,14 +239,10 @@ export const SuggestionForm = ({authToken, productSku, isViewerLoggedIn}) => {
 
   return (
     <React.Fragment>
-      <div className='header-region'>
-        {header}
-      </div>
       <div className='form-region'>
         {suggestionForm}
         {sendingSpinner}
-        {successMessage || errorMessage}
-        {postAnotherButton}
+        {successfulSendScreen || errorMessage}
         {bitsDisabledMessage || mustLoginMessage}
       </div>
       <div className='footer-region'>

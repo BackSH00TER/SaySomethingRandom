@@ -51,6 +51,10 @@
   padding-right: 16px;
 }
 
+.logo-footer {
+  padding-top: 80px;
+}
+
 .twitch-link {
   color: #b3b3b3;
   font-weight: 700;
