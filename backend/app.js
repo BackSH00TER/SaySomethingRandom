@@ -75,7 +75,8 @@ router.get('/phrases', async (req, res) => {
         uuid: 'b7ce3137-3ba2-4f83-91ec-b6cf719e5345',
         channelId: '123455',
         userId: '6546546',
-        displayName: 'loser1459'
+        displayName: 'loser1459',
+        dateCreated: 1603499959
       },
       {
         completed: false,
@@ -83,7 +84,8 @@ router.get('/phrases', async (req, res) => {
         uuid: 'f0804227-0bab-464b-8ac8-2b7b6b47fe6f',
         channelId: '123455',
         userId: '6546548',
-        displayName: 'randomUserwithLongUserNameThatIsReallyLong'
+        displayName: 'randomUserwithLongUserNameThatIsReallyLong',
+        dateCreated: 1603499642
       },
       {
         completed: false,
@@ -91,7 +93,8 @@ router.get('/phrases', async (req, res) => {
         uuid: 'f0804227-0bab-464b-8ac8-2b7b6b47f8756',
         channelId: '123455',
         userId: '6546548',
-        displayName: 'UserWithATrulyExtremelyVeryOutstandinlyLongNameThatWillMostCertainlyExceedTheWidth'
+        displayName: 'UserWithATrulyExtremelyVeryOutstandinlyLongNameThatWillMostCertainlyExceedTheWidth',
+        dateCreated: 1603499680
       },
       {
         completed: true,
@@ -99,7 +102,8 @@ router.get('/phrases', async (req, res) => {
         uuid: 'f0804227-0bab-464b-8ac8-2b7b6b4729',
         channelId: '123455',
         userId: '6546879',
-        displayName: 'CompletedUser'
+        displayName: 'CompletedUser',
+        dateCreated: 1603499540
       }
     ];
   } else {
@@ -108,7 +112,11 @@ router.get('/phrases', async (req, res) => {
   }
 
   console.log(`Phrases for channelId: ${req.query.channelId} : ${phrases}`);
-  res.json(phrases);
+
+  console.log('Sorting phrases...');
+  const sortedPhrases = sortPhrasesByOldestDate(phrases);
+
+  res.json(sortedPhrases);
 })
 
 // Creates/adds a phrase
@@ -290,6 +298,7 @@ const getPhrasesByChannel = async (channelId) => {
 const postPhrase = async (phraseBody) => { 
   const {channelId, userId, displayName, phrase} = phraseBody;
   const uuid = uuidv4(); // generates a unique id for the phrase
+  const date = getEpochDateTime();
   const params = {
     TableName: tableName,
     Item: {
@@ -298,7 +307,8 @@ const postPhrase = async (phraseBody) => {
       displayName,
       phrase,
       uuid,
-      completed: false
+      completed: false,
+      dateCreated: date
     }
   };
 
@@ -437,6 +447,25 @@ const makeServerToken = (channelId) => {
   return jsonwebtoken.sign(payload, secret, { algorithm: 'HS256' });
 }
 
+/**
+ * Returns the epoch date time (time in seconds since Jan 1, 1970)
+ * 
+ */
+const getEpochDateTime = () => {
+  const date = new Date();
+  // Need to return integer
+  return Math.floor(date.getTime() / 1000);
+}
+
+/**
+ * Sorts phrases by date returning oldest (smallest number) first
+ * @param {array} phrases
+ * @returns {array} sorted phrases 
+ */
+const sortPhrasesByOldestDate = (phrases) => {
+  phrases.sort((date1, date2) => date1.dateCreated - date2.dateCreated);
+  return phrases;
+}
 
 // The aws-serverless-express library creates a server and listens on a Unix
 // Domain Socket for you, so you can remove the usual call to app.listen.
