@@ -84,10 +84,10 @@ export const sendPhrase = async (phrase, transaction, authToken) => {
   }
 }
 
-export const markPhraseCompleted = async (messageId, authToken) => {
+export const markPhraseCompleted = async (messageId, authToken, isRejected = false) => {
   const url = `${ROOT_API_URL}/completed`;
 
-  const body = { messageId };
+  const body = { messageId, isRejected };
   const options = {
     method: 'PUT',
     body: JSON.stringify(body),

@@ -36,11 +36,11 @@ export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod, al
     </Button>
   );
   
-  const rejectButton = shouldShowButton && ( // TODO: wire up - if decide to use this
+  const rejectButton = (phrase) => shouldShowButton && (
     <Button
       variant='link'
       className='button-action'
-      onClick={() => {console.log('accept clicked')}}
+      onClick={() => markCompleted(phrase, authToken, true)}
       title='Reject'
     >
       <XSquareFill className='button-action-reject' color={'#E53935'} size={20} />
@@ -69,7 +69,7 @@ export const SuggestionsList = ({suggestions, isLightTheme, authToken, isMod, al
         >
          <div>{item.phrase}</div>
           <div className='msg-action-buttons'>
-            {acceptButton(item)} {rejectButton}
+            {acceptButton(item)} {rejectButton(item)}
           </div>
           {suggestedByUser(item)}
         </ListGroup.Item>)
@@ -101,10 +101,10 @@ const suggestedByUser = (item) => (
   </div>
 );
 
-const markCompleted = async (phrase, authToken) => {
+const markCompleted = async (phrase, authToken, isRejected = false) => {
   const messageId = phrase.uuid;
   // TODO: show isDeletingSpinner? Or just remove it right away as a client lie?
-  const { data, error } = await markPhraseCompleted(messageId, authToken);
+  const { data, error } = await markPhraseCompleted(messageId, authToken, isRejected);
   console.log('data result:', data);
   if (!!data) {
     // TODO: call to update list and remove this item - handled by the pubsub event

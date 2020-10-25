@@ -201,7 +201,8 @@ router.put('/completed', async (req, res) => {
 
   const body = {
     channelId: channelId,
-    messageId: req.body.messageId
+    messageId: req.body.messageId,
+    isRejected: req.body.isRejected
   };
 
   let result = {};
@@ -310,6 +311,7 @@ const postPhrase = async (phraseBody) => {
       phrase,
       uuid,
       completed: false,
+      isRejected: false,
       dateCreated: date
     }
   };
@@ -322,6 +324,7 @@ const postPhrase = async (phraseBody) => {
     phrase,
     uuid,
     completed: false,
+    isRejected: false,
     dateCreated: date
   };
 
@@ -337,7 +340,7 @@ const postPhrase = async (phraseBody) => {
 }
 
 const completePhrase = async (args) => {
-  const {channelId, messageId} = args;
+  const {channelId, messageId, isRejected} = args;
 
   /** ReturnValues:
    *   "ALL_NEW" - Returns all attributes of the update item
@@ -349,9 +352,10 @@ const completePhrase = async (args) => {
       "channelId": channelId,
       "uuid": messageId
     },
-    UpdateExpression: "set completed = :completed",
+    UpdateExpression: "set completed = :completed, isRejected = :isRejected",
     ExpressionAttributeValues: {
-      ":completed": true
+      ":completed": true,
+      ":isRejected": isRejected
     },
     ReturnValues: "ALL_NEW"
   };
