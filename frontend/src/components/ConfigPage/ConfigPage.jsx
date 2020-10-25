@@ -88,7 +88,6 @@ export default class ConfigPage extends React.Component {
       return (
         <div className="Config">
           <div className={this.state.theme === 'light' ? 'Config-light' : 'Config-dark'}>
-            <h3>BIG LOGO GOES HERE BLUE BANNER TYPE THING</h3>
             <ConfigSettingsComponent
               twitch={this.twitch}
               configSettings={this.state.configSettings}
