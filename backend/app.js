@@ -122,11 +122,17 @@ router.get('/phrases', async (req, res) => {
 // Creates/adds a phrase
 router.post('/phrase', async (req, res) => {
   console.log('Endpoint /phrase, beginning phrase post...');
-  // If the req body has a transactionReceipt, this means that the user completed a bits transaction
-  // The transactionReceipt is a JWT, and we need to verify that it is valid
-  if (req.body.transactionReceipt) { // TODO: This needs to be tested still and log something if its not a valid transactionreceipt
-    console.log('Validating transactionReceipt...');
-    verifyAndDecode(req.body.transactionReceipt);
+  let userId;
+  let displayName;
+  // If the req body has a transactionObject, this means that the user completed a bits transaction
+  if (req.body.transactionObject) {
+    console.log('TransactionObject received: ', req.body.transactionObject);
+    // The transactionReceipt is a JWT, and we need to verify that it is valid
+    if (!IS_DEV_MODE) {
+      req.body.transactionObject.transactionReceipt && verifyAndDecode(req.body.transactionObject.transactionReceipt);
+    }
+    userId = req.body.transactionObject.userId;
+    displayName = req.body.transactionObject.displayName;
   }
 
   const jwt = req.headers.authorization;
@@ -140,10 +146,12 @@ router.post('/phrase', async (req, res) => {
     return;
   }
 
-  const {channel_id: channelId, user_id: userId } = decodedJWT;
-  let displayName;
+  const {channel_id: channelId } = decodedJWT;
+
   try {
-    displayName = await getUserById(userId);
+    if (!displayName) { // Checks if already has displayName from transactionObject
+      displayName = await getUserById(userId);
+    }
   } catch (err) {
     // If unable to get users displayName, then do nothing
     console.error(`Error getting user displayName from userId: ${userId}. Error is: ${err}`);

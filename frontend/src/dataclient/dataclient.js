@@ -51,9 +51,13 @@ export const fetchPhrases = async (channelId, authToken) => {
  */
 export const sendPhrase = async (phrase, transaction, authToken) => {
   const url = `${ROOT_API_URL}/phrase`;
+
+  if (!transaction) {
+    throw new Error('Error: Invalid transaction object');
+  }
   const body = {
     phrase,
-    transactionReceipt: transaction.transactionReceipt || ''
+    transactionObject: transaction
   };
   const options = {
     method: 'POST',
