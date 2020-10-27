@@ -135,6 +135,7 @@ router.post('/phrase', async (req, res) => {
   // If user is not logged in, then do nothing
   const isLoggedIn = decodedJWT.opaque_user_id[0] === 'U' ? true : false;
   if (!isLoggedIn) {
+    console.error('Error: User tried to send a phrase but they are not logged in');
     res.json(null);
     return;
   }
@@ -145,7 +146,7 @@ router.post('/phrase', async (req, res) => {
     displayName = await getUserById(userId);
   } catch (err) {
     // If unable to get users displayName, then do nothing
-    console.log(`Error getting user displayName from userId: ${userId}. Error is: ${err}`);
+    console.error(`Error getting user displayName from userId: ${userId}. Error is: ${err}`);
     res.json(null);
     return;
   }
@@ -195,7 +196,7 @@ router.put('/completed', async (req, res) => {
   // Need to verify here that user isMod, we check clientSide but can't trust that
   // If user is not mod or broadcaster, fail the action and don't proceed
   if (!(role === 'broadcaster' || role === 'moderator')) {
-    console.log('Error: User is not the broadcaster or a mod and cannot complete the completePhrase action');
+    console.error('Error: User is not the broadcaster or a mod and cannot complete the completePhrase action');
     res.status(400).json('USER_IS_NOT_MOD');
   }
 
@@ -272,7 +273,7 @@ const postToTwitchExtPubSub = async (channelId, messagePayload, eventType) => {
   
   if (result.status !== 204) {
     const parsed = await result.json();
-    console.log('ERROR posting to Twitch Pub Sub', parsed);
+    console.error('ERROR posting to Twitch Pub Sub', parsed);
     // TODO: Error handling
   }
   return result;
@@ -293,7 +294,7 @@ const getPhrasesByChannel = async (channelId) => {
     return data.Items;
   }
   catch (err) {
-    console.log(`Error querying dynamodb: ${err}`);
+    console.error(`Error querying dynamodb: ${err}`);
   }
 }
 
@@ -334,7 +335,7 @@ const postPhrase = async (phraseBody) => {
     return postedPhrase;
   }
   catch (err) {
-    console.log(`Error putting data to dynamodb: ${err}`);
+    console.error(`Error putting data to dynamodb: ${err}`);
     return err;
   }
 }
@@ -368,7 +369,7 @@ const completePhrase = async (args) => {
     return data.Attributes;
   }
   catch (err) {
-    console.log(`Error updating data to dynamodb: ${err}`);
+    console.error(`Error updating data to dynamodb: ${err}`);
     return err;
   }
 }
@@ -390,7 +391,7 @@ const getAppAccessToken = async () => {
     return data.access_token;
   } catch (err) {
     // TODO: handle err, if this fails we dont want to allow subsequent actions to continue as we need this to get user display name
-    console.log(`Error getting app accessToken: ${err}`);
+    console.error(`Error getting app accessToken: ${err}`);
   }
 }
 
@@ -417,7 +418,7 @@ const getUserById = async (userId) => {
     return displayName;
   }
   catch(err) {
-    console.log(`Error getting userById: ${err}`); // TODO handle errors
+    console.error(`Error getting userById: ${err}`); // TODO handle errors
     throw err;
   }
 }
@@ -436,7 +437,7 @@ const verifyAndDecode = (authHeader) => {
   try {
     return jsonwebtoken.verify(token, secret, { algorithms: ['HS256']});
   } catch (err) {
-    return console.log('Error verifying token. Invalid JWT. Error: ', err); // TODO error handling
+    return console.error('Error verifying token. Invalid JWT. Error: ', err); // TODO error handling
   }
 }
 
@@ -501,10 +502,10 @@ const sendToChat = async (channelId, postedPhrase) => {
   if (result.status !== 204) {
     if(result.status === 429) {
       // Message rate limit is 12 msgs per minute
-      console.log(`Error: Send to chat failed, rate limit reached for channelId: ${channelId}`);
+      console.error(`Error: Send to chat failed, rate limit reached for channelId: ${channelId}`);
     }
     const parsed = await result.json();
-    console.log(`ERROR sending message to chat for channeldId: ${channelId}. Error: ${JSON.stringify(parsed)}`);
+    console.error(`ERROR sending message to chat for channeldId: ${channelId}. Error: ${JSON.stringify(parsed)}`);
     // TODO: Error handling
     return result;
   }
