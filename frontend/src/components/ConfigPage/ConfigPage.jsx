@@ -156,7 +156,7 @@ const ConfigSettingsComponent = ({twitch, configSettings, products}) => {
 
   const bitsPriceTooltip = (props) => (
     <Tooltip id="bits-price-tooltip" {...props}>
-      The price to submit a suggestion.
+      The amount to submit a suggestion.
     </Tooltip>
   );
 
@@ -204,7 +204,7 @@ const ConfigSettingsComponent = ({twitch, configSettings, products}) => {
     <Form>
       <Form.Group as={Row} controlId="bitsPriceSetting">
         <Form.Label column sm={4}>
-          Bits price
+          Bits amount
           {bitsInfoIcon}
         </Form.Label>
         <Col sm={7}>

@@ -53,3 +53,7 @@ In order to test on Twitch page while running locally:
       - Backennd sends a pubsub event trigger clients to update the suggestions list
       - Clicking Submit another resets the fields
     - In the rare event that the send fails (backend service err), the user is presented with an err msg
+
+- Configuration Page
+  - Broadcaster chooses bits amount per suggestion
+  - Broadcaster chooses whether they want to allow their mods to be able to help mark suggestions as complete/rejected
