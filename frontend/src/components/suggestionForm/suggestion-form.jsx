@@ -46,7 +46,7 @@ export const SuggestionForm = ({authToken, productSku, isViewerLoggedIn}) => {
       });
     
       twitch.bits.onTransactionCancelled((transaction) => {
-        console.log('onTransactiononTransactionCancelled()) called, received transaction:', transaction);
+        console.log('onTransactionCancelled() called, received transaction:', transaction);
         resetState();
       });
     }

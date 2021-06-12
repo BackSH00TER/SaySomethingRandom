@@ -122,6 +122,7 @@ router.get('/phrases', async (req, res) => {
 // Creates/adds a phrase
 router.post('/phrase', async (req, res) => {
   console.log('Endpoint /phrase, beginning phrase post...');
+  console.log('Phrase to upload: ', req.body.phrase)
   let userId;
   let displayName;
   // If the req body has a transactionObject, this means that the user completed a bits transaction
@@ -137,6 +138,7 @@ router.post('/phrase', async (req, res) => {
 
   const jwt = req.headers.authorization;
   const decodedJWT = verifyAndDecode(jwt);
+  console.log('decodedJWT', decodedJWT);
 
   // If user is not logged in, then do nothing
   const isLoggedIn = decodedJWT.opaque_user_id[0] === 'U' ? true : false;
@@ -147,6 +149,7 @@ router.post('/phrase', async (req, res) => {
   }
 
   const {channel_id: channelId } = decodedJWT;
+  console.log("ChannelId to save phrase to: ", channelId);
 
   try {
     if (!displayName) { // Checks if already has displayName from transactionObject
@@ -179,7 +182,7 @@ router.post('/phrase', async (req, res) => {
   } else {
     // Returns empty object {} on success (Status 204)
     postResult = await postPhrase(body);
-    console.log('Phrase posted:', postResult)
+    console.log('Phrase posted to channelId:', channelId, postResult)
 
     // TODO: Return something to show success/failure
     // TODO: Should be able to cehck that status is 204... possibly just result.status?
@@ -442,8 +445,11 @@ const verifyAndDecode = (authHeader) => {
   if (authHeader.startsWith(bearerPrefix)) {
     token = authHeader.substring(bearerPrefix.length);
   }
+  console.log('VerifyAndDecode token:', token);
   try {
-    return jsonwebtoken.verify(token, secret, { algorithms: ['HS256']});
+    // Using ignoreExpiration since there were some cases where users JWT was expired but they had already completed a valid transaction.
+    // We really only need to decode the JWT here
+    return jsonwebtoken.verify(token, secret, { algorithms: ['HS256'], ignoreExpiration: true });
   } catch (err) {
     return console.error('Error verifying token. Invalid JWT. Error: ', err); // TODO error handling
   }
@@ -488,7 +494,7 @@ const sortPhrasesByOldestDate = (phrases) => {
  * @param {string} channelId who's chat the message is sent to
  */
 const sendToChat = async (channelId, postedPhrase) => {
-  console.log('Sending message to channel...');
+  console.log('Sending message to channel: ', channelId, '...');
   const authToken = makeServerToken(channelId);
 
   const message = `@${postedPhrase.displayName} added the suggestion: "${postedPhrase.phrase}".`;

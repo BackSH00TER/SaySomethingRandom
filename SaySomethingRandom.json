@@ -150,13 +150,17 @@
     "authorName": "BackSH00TER",
     "bitsEnabled": true,
     "canInstall": true,
-    "configUrl": "https://localhost:8080/config.html",
+    "configUrl": "https://aidc5ye12tjqz12wz901ryjnkwrat7.ext-twitch.tv/aidc5ye12tjqz12wz901ryjnkwrat7/0.0.1/36675718aa319f51a44a0684b0d03284/config.html",
     "configurationLocation": "hosted",
-    "description": "On The Spot is a fun tool that increases viewer engagement. Through this extension, viewers can provide the broadcaster with suggested phrases or actions that they want to see the broadcaster do. \n\nThere are a variety of different ways that this extension can be used. One of the most common examples is to use this while the broadcaster is role playing. Viewers get the opportunity to help steer the story by providing phrases or actions for the broadcaster to improvise. \n\nNote: It is ultimately up to the broadcaster to choose whether they will carry out the suggested phrase/action or a modified version of it. \n\nConfiguration:\n- Choose bits price from 50 bits to 500 bits per suggestion\n- Choose to allow your moderators to be able to help mark suggestions as completed\n\nThis extension is currently in an early beta with more features planned to come.",
+    "description": "On The Spot is a fun tool that increases viewer engagement. Through this extension, viewers can provide the broadcaster with suggested phrases or actions that they want to see the broadcaster do. \n\nThere are a variety of different ways that this extension can be used. One of the most common examples is to use this while the broadcaster is role playing. Viewers get the opportunity to help steer the story by providing phrases or actions for the broadcaster to improvise. \n\nThe extension panel will update live as new suggestions are added and will also post a message to your chat.\n\nNote: It is ultimately up to the broadcaster to choose whether they will carry out the suggested phrase/action or a modified version of it. \n\nConfiguration:\n- Choose bits amount from 50 bits to 500 bits per suggestion\n- Choose to allow your moderators to be able to help mark suggestions as completed\n\nThis extension is currently in an early beta with more features planned to come.",
     "eulaTosUrl": "",
     "hasChatSupport": true,
-    "iconUrl": "",
-    "iconUrls": {},
+    "iconUrl": "https://extensions-discovery-images.twitch.tv/aidc5ye12tjqz12wz901ryjnkwrat7/0.0.1/logo0d51da74-2a2a-481a-b0bb-1334e4503ffe",
+    "iconUrls": {
+      "100x100": "https://extensions-discovery-images.twitch.tv/aidc5ye12tjqz12wz901ryjnkwrat7/0.0.1/logo0d51da74-2a2a-481a-b0bb-1334e4503ffe",
+      "24x24": "https://extensions-discovery-images.twitch.tv/aidc5ye12tjqz12wz901ryjnkwrat7/0.0.1/taskbar0380ca24-28cd-4c29-81a9-83df19bbf3ad",
+      "300x200": "https://extensions-discovery-images.twitch.tv/aidc5ye12tjqz12wz901ryjnkwrat7/0.0.1/discovery36d2b150-3084-4fcc-a52e-faf30a386d22"
+    },
     "id": "aidc5ye12tjqz12wz901ryjnkwrat7",
     "installationCount": -42,
     "liveConfigUrl": "",
@@ -165,27 +169,30 @@
     "privacyPolicyUrl": "",
     "requestIdentityLink": true,
     "requiredBroadcasterAbilities": [],
-    "screenshotUrls": [],
+    "screenshotUrls": [
+      "https://extensions-discovery-images.twitch.tv/aidc5ye12tjqz12wz901ryjnkwrat7/0.0.1/screenshotb3a138e6-2088-4cfe-9406-33c708bed73c",
+      "https://extensions-discovery-images.twitch.tv/aidc5ye12tjqz12wz901ryjnkwrat7/0.0.1/screenshot5db37b60-c31c-4bb0-914f-4df45c9cf9e8"
+    ],
     "sku": "",
-    "state": "Testing",
+    "state": "Released",
     "subscriptionsSupportLevel": "none",
-    "summary": "Viewers play along with the broadcaster by putting them On The Spot with suggested actions or phrases that they want to see them do.",
+    "summary": "Play along with the broadcaster by putting them On The Spot with suggested actions or phrases that you want to see them do.",
     "supportEmail": "hildeapps@gmail.com",
     "vendorCode": "",
     "version": "0.0.1",
     "viewerSummary": "Provide suggestions of phrases or actions that you want to see the broadcaster do.",
-    "viewerUrl": "https://localhost:8080/panel.html",
+    "viewerUrl": "https://aidc5ye12tjqz12wz901ryjnkwrat7.ext-twitch.tv/aidc5ye12tjqz12wz901ryjnkwrat7/0.0.1/36675718aa319f51a44a0684b0d03284/panel.html",
     "viewerUrls": {
-      "panel": "https://localhost:8080/panel.html"
+      "panel": "https://aidc5ye12tjqz12wz901ryjnkwrat7.ext-twitch.tv/aidc5ye12tjqz12wz901ryjnkwrat7/0.0.1/36675718aa319f51a44a0684b0d03284/panel.html"
     },
     "views": {
       "panel": {
-        "viewerUrl": "https://localhost:8080/panel.html",
+        "viewerUrl": "https://aidc5ye12tjqz12wz901ryjnkwrat7.ext-twitch.tv/aidc5ye12tjqz12wz901ryjnkwrat7/0.0.1/36675718aa319f51a44a0684b0d03284/panel.html",
         "height": 500,
         "canLinkExternalContent": true
       },
       "config": {
-        "viewerUrl": "https://localhost:8080/config.html",
+        "viewerUrl": "https://aidc5ye12tjqz12wz901ryjnkwrat7.ext-twitch.tv/aidc5ye12tjqz12wz901ryjnkwrat7/0.0.1/36675718aa319f51a44a0684b0d03284/config.html",
         "canLinkExternalContent": true
       }
     },
@@ -197,5 +204,6 @@
     ]
   },
   "name": "SaySomethingRandom",
-  "version": 2
+  "version": 3,
+  "usingRandomFrontendHostingPort": true
 }
