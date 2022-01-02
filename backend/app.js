@@ -239,22 +239,23 @@ router.put('/completed', async (req, res) => {
 /**
  * Posts an updated event to the Twitch Extension PubSub (note: this is different than Twitch PubSub)
  * Broadcasts the message to the specified channelId, frontend should have a twitch.listen() to listen for the event.
- * Doc: https://dev.twitch.tv/docs/extensions/reference/#send-extension-pubsub-message
+ * Doc: https://dev.twitch.tv/docs/api/reference#send-extension-pubsub-message
  * @param channelId -  channelId to update w/ message update event
  * @param messagePayload - object containing the message attributes
  * @param eventType - represents the type of event that is being sent
  */
 const postToTwitchExtPubSub = async (channelId, messagePayload, eventType) => {
   console.log(`Posting to PubSub for channelId: ${channelId}, eventType: ${eventType}`);
-  const pubSubPostUrl = `https://api.twitch.tv/extensions/message/${channelId}`;
+  const pubSubPostUrl = `https://api.twitch.tv/helix/extensions/pubsub`;
 
   // Create a JWT for the server to use to post to pubsub (expires in 60 seconds)
   const serverAccessToken = makeServerToken(channelId);
   /**
    * Required body params for PubSub Post event:
-   *    content_type  | string    | application/json
-   *    message       | string    | message to be sent
-   *    targets       | string[]  | valid values: ("broadcast", "global")
+   *    broadcaster_id        | string    | id of broadcaster to receive payload
+   *    is_global_broadcaster | boolean   | indicates if msg should be sent to all channels where extension is active (defaults to false)
+   *    message               | string    | message to be sent
+   *    target                | string[]  | valid values: ("broadcast", "global")
    */
   const message = {
     eventType,
@@ -262,9 +263,10 @@ const postToTwitchExtPubSub = async (channelId, messagePayload, eventType) => {
   };
 
   const body = {
+    broadcaster_id: channelId,
+    is_global_broadcaster: false,
     message: JSON.stringify(message),
-    targets: ['broadcast'],
-    'content_type': 'application/json'
+    target: ['broadcast']
   };
 
   const options = {
@@ -497,19 +499,24 @@ const sendToChat = async (channelId, postedPhrase) => {
   console.log('Sending message to channel: ', channelId, '...');
   const authToken = makeServerToken(channelId);
 
+  // URL Version will need to change w/ version of app
+  const url = `https://api.twitch.tv/helix/extensions/chat?broadcaster_id=${channelId}`;
+
   const message = `@${postedPhrase.displayName} added the suggestion: "${postedPhrase.phrase}".`;
+  const body = {
+    extension_id: ExtensionClientId,
+    extension_version: '0.0.1', // URL Version will need to change w/ version of app
+    text: message
+  };
   const options = {
     method: 'POST',
-    body: JSON.stringify({text: message}),
+    body: JSON.stringify(body),
     headers: {
       'Content-Type': 'application/json',
       'Client-ID': ExtensionClientId,
       Authorization: `Bearer ${authToken}`
     }
   };
-
-  // URL Version will need to change w/ version of app
-  const url = `https://api.twitch.tv/extensions/${ExtensionClientId}/0.0.1/channels/${channelId}/chat`;
 
   const result = await fetch(url, options);
   
