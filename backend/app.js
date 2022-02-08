@@ -505,7 +505,7 @@ const sendToChat = async (channelId, postedPhrase) => {
   const message = `@${postedPhrase.displayName} added the suggestion: "${postedPhrase.phrase}".`;
   const body = {
     extension_id: ExtensionClientId,
-    extension_version: '0.0.1', // URL Version will need to change w/ version of app
+    extension_version: '0.0.2', // URL Version will need to change w/ version of app
     text: message
   };
   const options = {
